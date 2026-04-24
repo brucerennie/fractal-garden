@@ -43,15 +43,12 @@ export const ViewportOverlay = ({ title, lines, actions = [] }: Props) => {
 
     return combined.filter(
       (action, index) =>
-        combined.findIndex((candidate) => candidate.label === action.label) ===
-        index
+        combined.findIndex((candidate) => candidate.label === action.label) === index,
     );
   }, [actions]);
 
   return (
-    <div
-      className={`${styles.overlay} ${visible ? "" : styles.hidden}`.trim()}
-    >
+    <div className={`${styles.overlay} ${visible ? "" : styles.hidden}`.trim()}>
       <div className={styles.title}>{title || pageTitle || "Fractal"}</div>
       <div className={styles.copy}>
         {lines.map((line) => (

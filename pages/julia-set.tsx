@@ -1,22 +1,17 @@
 import Head from "next/head";
-import React, { useEffect, useRef, useState } from "react";
-import {
-  PanelColor,
-  PanelNumber,
-  PanelSelect,
-} from "../components/ExplorerControls";
+import { useEffect, useRef, useState } from "react";
+import { WebGLCanvas } from "../components/Canvas";
+import { PanelColor, PanelNumber, PanelSelect } from "../components/ExplorerControls";
 import { ExplorerPanel } from "../components/ExplorerPanel";
 import { NavElement } from "../components/Navbar";
 import { SideDrawer } from "../components/SideDrawer";
 import styles from "../styles/Fullscreen.module.css";
-import { getDescription } from "../utils/readFiles";
-import { scrollToDescription } from "../utils/scrollToDescription";
-import { useWindowSize } from "../utils/hooks/useWindowResize";
-import { WebGLCanvas } from "../components/Canvas";
-import vertexShader from "../utils/shaders/mandelbrot.vert";
-import fragmentShader from "../utils/shaders/julia.frag";
-import { createShaderProgram } from "../utils/shaders/compileShader";
 import { useShaderViewportControls } from "../utils/hooks/useShaderViewportControls";
+import { useWindowSize } from "../utils/hooks/useWindowResize";
+import { getDescription } from "../utils/readFiles";
+import { createShaderProgram } from "../utils/shaders/compileShader";
+import fragmentShader from "../utils/shaders/julia.frag";
+import vertexShader from "../utils/shaders/mandelbrot.vert";
 
 type Props = {
   description: string;
@@ -87,11 +82,7 @@ const JuliaSet = ({ description }: Props) => {
     if (!vertBuf) return;
 
     gl.bindBuffer(gl.ARRAY_BUFFER, vertBuf);
-    gl.bufferData(
-      gl.ARRAY_BUFFER,
-      new Float32Array([-1, -1, 3, -1, -1, 3]),
-      gl.STATIC_DRAW
-    );
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
 
     const aPositionLocation = gl.getAttribLocation(program, "aPosition");
     gl.enableVertexAttribArray(aPositionLocation);
@@ -116,9 +107,9 @@ const JuliaSet = ({ description }: Props) => {
     const parseHexColor = (hex: string) => {
       const clean = hex.replace("#", "");
       return [
-        parseInt(clean.slice(0, 2), 16) / 255,
-        parseInt(clean.slice(2, 4), 16) / 255,
-        parseInt(clean.slice(4, 6), 16) / 255,
+        Number.parseInt(clean.slice(0, 2), 16) / 255,
+        Number.parseInt(clean.slice(2, 4), 16) / 255,
+        Number.parseInt(clean.slice(4, 6), 16) / 255,
       ] as const;
     };
 
@@ -204,12 +195,7 @@ const JuliaSet = ({ description }: Props) => {
           <PanelNumber path="cImag" min={-1} max={1} step={0.001} />
         </ExplorerPanel>
         <div className={styles.fullScreen}>
-          <WebGLCanvas
-            setGl={setGl}
-            width={width}
-            height={height}
-            setCnv={setCnv}
-          />
+          <WebGLCanvas setGl={setGl} width={width} height={height} setCnv={setCnv} />
         </div>
         <SideDrawer description={description} />
         <NavElement />

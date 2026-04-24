@@ -1,11 +1,7 @@
 import Head from "next/head";
 import { useEffect, useState } from "react";
 import { Canvas } from "../components/Canvas";
-import {
-  PanelBoolean,
-  PanelColor,
-  PanelNumber,
-} from "../components/ExplorerControls";
+import { PanelBoolean, PanelColor, PanelNumber } from "../components/ExplorerControls";
 import { ExplorerPanel } from "../components/ExplorerPanel";
 import { NavElement } from "../components/Navbar";
 import { SideDrawer } from "../components/SideDrawer";
@@ -14,7 +10,7 @@ import { radians } from "../utils/ctxHelpers";
 import { useWindowSize } from "../utils/hooks/useWindowResize";
 import { getDescription } from "../utils/readFiles";
 import { remapper } from "../utils/scaling";
-import { Matrix2D, Vec2D, Vector } from "../utils/vectors";
+import { type Matrix2D, type Vec2D, Vector } from "../utils/vectors";
 
 type Config = {
   iterations: number;
@@ -56,8 +52,7 @@ function determineTriangleTip(angle: number): (p1: Vec2D, p2: Vec2D) => Vec2D {
 }
 
 const remapH = remapper([0, MAX_ITERATIONS], [23, 88]);
-const hsvGradient = (iteration: number) =>
-  `hsl(${remapH(iteration)}, 96%, 30%)`;
+const hsvGradient = (iteration: number) => `hsl(${remapH(iteration)}, 96%, 30%)`;
 
 const PythagorasTreeComponent = ({ description }: Props) => {
   const [config, setConfig] = useState<Config>({
@@ -164,12 +159,7 @@ const PythagorasTreeComponent = ({ description }: Props) => {
         <ExplorerPanel data={config} mode="pattern" onUpdate={handleUpdate}>
           <PanelColor path="background" />
           <PanelNumber path="angle" min={30} max={60} step={1} />
-          <PanelNumber
-            path="iterations"
-            min={0}
-            max={MAX_ITERATIONS}
-            step={1}
-          />
+          <PanelNumber path="iterations" min={0} max={MAX_ITERATIONS} step={1} />
           <PanelBoolean path="animateIterations" />
           <PanelBoolean path="fillTriangles" />
           <PanelBoolean path="fillSquares" />

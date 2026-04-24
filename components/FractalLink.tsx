@@ -1,8 +1,7 @@
-import Image, { StaticImageData } from "next/image";
+import Image, { type StaticImageData } from "next/image";
 import Link from "next/link";
-import styles from "../styles/FractalLink.module.css";
 import useDimensions from "react-cool-dimensions";
-import { CSSProperties } from "react";
+import styles from "../styles/FractalLink.module.css";
 
 type FractalLinkProps = {
   href: string;
@@ -11,12 +10,7 @@ type FractalLinkProps = {
   prio?: boolean;
 };
 
-export const FractalLink = ({
-  href,
-  imageSrc,
-  title,
-  prio = false,
-}: FractalLinkProps) => {
+export const FractalLink = ({ href, imageSrc, title, prio = false }: FractalLinkProps) => {
   const { observe, width, height } = useDimensions<HTMLDivElement | null>();
 
   return (
@@ -24,9 +18,7 @@ export const FractalLink = ({
       <article className={styles.card}>
         <Link as={href} href={href}>
           <a className={styles.cardLink}>
-            <span className="screen-reader-only">
-              Link to the {title} fractal page.
-            </span>
+            <span className="screen-reader-only">Link to the {title} fractal page.</span>
           </a>
         </Link>
         <div className={styles.squareImage} ref={observe}>
@@ -59,9 +51,7 @@ export const AddMoreLink = () => {
           rel="noopener noreferrer"
           className={styles.cardLink}
         >
-          <span className="screen-reader-only">
-            Link to the contribution page on GitHub.
-          </span>
+          <span className="screen-reader-only">Link to the contribution page on GitHub.</span>
         </a>
         <div className={styles.squareImage + " " + styles.centerIcon}>
           <span className={styles.bigIcon + " icon-github"}>

@@ -223,10 +223,7 @@ const PAGE_SEO: Record<string, SeoEntry> = {
 const DEFAULT_ENTRY = PAGE_SEO["/"];
 
 function getSiteUrl() {
-  return (process.env.NEXT_PUBLIC_SITE_URL || DEFAULT_SITE_URL).replace(
-    /\/$/,
-    ""
-  );
+  return (process.env.NEXT_PUBLIC_SITE_URL || DEFAULT_SITE_URL).replace(/\/$/, "");
 }
 
 function joinUrl(base: string, path: string) {

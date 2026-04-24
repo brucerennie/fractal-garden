@@ -1,4 +1,4 @@
-import { useRef, useEffect, Dispatch, SetStateAction } from "react";
+import { type Dispatch, type SetStateAction, useEffect, useRef } from "react";
 
 type CleanedProps = {
   width: number;
@@ -45,13 +45,7 @@ type Props = {
 };
 
 export const Canvas = ({ setCtx, width, height }: Props) => {
-  return (
-    <>
-      {width && height && (
-        <_Canvas setCtx={setCtx} width={width} height={height} />
-      )}
-    </>
-  );
+  return <>{width && height && <_Canvas setCtx={setCtx} width={width} height={height} />}</>;
 };
 
 type WebGLCleanedProps = {
@@ -60,12 +54,7 @@ type WebGLCleanedProps = {
   setCtx: Dispatch<SetStateAction<WebGLRenderingContext | null>>;
   setCnv: Dispatch<SetStateAction<HTMLCanvasElement | null>>;
 };
-export const _WebGLCanvas = ({
-  setCtx,
-  setCnv,
-  width,
-  height,
-}: WebGLCleanedProps) => {
+export const _WebGLCanvas = ({ setCtx, setCnv, width, height }: WebGLCleanedProps) => {
   const canvasRef = useRef<null | HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -98,21 +87,11 @@ type WebGLProps = {
   setCnv: Dispatch<SetStateAction<HTMLCanvasElement | null>>;
 };
 
-export const WebGLCanvas = ({
-  setGl: setCtx,
-  setCnv,
-  width,
-  height,
-}: WebGLProps) => {
+export const WebGLCanvas = ({ setGl: setCtx, setCnv, width, height }: WebGLProps) => {
   return (
     <>
       {width && height && (
-        <_WebGLCanvas
-          setCnv={setCnv}
-          setCtx={setCtx}
-          width={width}
-          height={height}
-        />
+        <_WebGLCanvas setCnv={setCnv} setCtx={setCtx} width={width} height={height} />
       )}
     </>
   );

@@ -1,17 +1,16 @@
-import React, { useEffect, useRef, useState } from "react";
+import Head from "next/head";
+import { useEffect, useRef, useState } from "react";
+import { WebGLCanvas } from "../components/Canvas";
 import { NavElement } from "../components/Navbar";
-import styles from "../styles/Fullscreen.module.css";
 import { SideDrawer } from "../components/SideDrawer";
 import { ViewportOverlay } from "../components/ViewportOverlay";
-import { getDescription } from "../utils/readFiles";
-import { scrollToDescription } from "../utils/scrollToDescription";
-import { useWindowSize } from "../utils/hooks/useWindowResize";
-import { WebGLCanvas } from "../components/Canvas";
-import vertexShader from "../utils/shaders/mandelbrot.vert";
-import fragmentShader from "../utils/shaders/mandelbrot.frag";
-import { createShaderProgram } from "../utils/shaders/compileShader";
-import Head from "next/head";
+import styles from "../styles/Fullscreen.module.css";
 import { useShaderViewportControls } from "../utils/hooks/useShaderViewportControls";
+import { useWindowSize } from "../utils/hooks/useWindowResize";
+import { getDescription } from "../utils/readFiles";
+import { createShaderProgram } from "../utils/shaders/compileShader";
+import fragmentShader from "../utils/shaders/mandelbrot.frag";
+import vertexShader from "../utils/shaders/mandelbrot.vert";
 
 type Props = {
   description: string;
@@ -54,11 +53,7 @@ const Mandelbrot = ({ description }: Props) => {
     if (!vertBuf) return;
 
     gl.bindBuffer(gl.ARRAY_BUFFER, vertBuf);
-    gl.bufferData(
-      gl.ARRAY_BUFFER,
-      new Float32Array([-1, -1, 3, -1, -1, 3]),
-      gl.STATIC_DRAW
-    );
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
 
     const aPositionLocation = gl.getAttribLocation(program, "aPosition");
     gl.enableVertexAttribArray(aPositionLocation);
@@ -67,11 +62,7 @@ const Mandelbrot = ({ description }: Props) => {
     const zoomCenterLocation = gl.getUniformLocation(program, "u_zoomCenter");
     const zoomSizeLocation = gl.getUniformLocation(program, "u_zoomSize");
     const resolutionLocation = gl.getUniformLocation(program, "u_resolution");
-    if (
-      zoomCenterLocation === null ||
-      zoomSizeLocation === null ||
-      resolutionLocation === null
-    ) {
+    if (zoomCenterLocation === null || zoomSizeLocation === null || resolutionLocation === null) {
       return;
     }
 
@@ -114,12 +105,7 @@ const Mandelbrot = ({ description }: Props) => {
       </Head>
       <main className={styles.fullScreen}>
         <div className={styles.fullScreen}>
-          <WebGLCanvas
-            setGl={setGl}
-            width={width}
-            height={height}
-            setCnv={setCnv}
-          />
+          <WebGLCanvas setGl={setGl} width={width} height={height} setCnv={setCnv} />
           <ViewportOverlay
             title="Mandelbrot Set"
             lines={[

@@ -1,23 +1,15 @@
 import Head from "next/head";
 import { useEffect, useState } from "react";
 import { Canvas } from "../components/Canvas";
-import {
-  PanelBoolean,
-  PanelColor,
-  PanelNumber,
-} from "../components/ExplorerControls";
+import { PanelBoolean, PanelColor, PanelNumber } from "../components/ExplorerControls";
 import { ExplorerPanel } from "../components/ExplorerPanel";
 import { NavElement } from "../components/Navbar";
 import { SideDrawer } from "../components/SideDrawer";
 import styles from "../styles/Fullscreen.module.css";
 import { useOrbitZoomControls } from "../utils/hooks/useOrbitZoomControls";
 import { useWindowSize } from "../utils/hooks/useWindowResize";
-import {
-  drawVoxelScene,
-  generateVicsekFractal3D,
-} from "../utils/voxelFractals";
 import { getDescription } from "../utils/readFiles";
-import { scrollToDescription } from "../utils/scrollToDescription";
+import { drawVoxelScene, generateVicsekFractal3D } from "../utils/voxelFractals";
 
 type Props = {
   description: string;
@@ -75,8 +67,7 @@ const VicsekFractal3D = ({ description }: Props) => {
     const id = window.setTimeout(() => {
       setConfig((old) => ({
         ...old,
-        iterations:
-          old.iterations >= MAX_ITERATIONS ? 0 : old.iterations + 1,
+        iterations: old.iterations >= MAX_ITERATIONS ? 0 : old.iterations + 1,
       }));
     }, delay);
 
@@ -151,12 +142,7 @@ const VicsekFractal3D = ({ description }: Props) => {
           <PanelColor path="background" />
           <PanelColor path="fillColor" />
           <PanelColor path="strokeColor" />
-          <PanelNumber
-            path="iterations"
-            min={0}
-            max={MAX_ITERATIONS}
-            step={1}
-          />
+          <PanelNumber path="iterations" min={0} max={MAX_ITERATIONS} step={1} />
           <PanelBoolean path="animateIterations" />
           <PanelBoolean path="autoRotate" />
           <PanelNumber path="rotationX" min={-180} max={180} step={1} />

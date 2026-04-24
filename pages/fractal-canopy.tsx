@@ -1,19 +1,14 @@
-import React, { useEffect, useState } from "react";
-import { NavElement } from "../components/Navbar";
-import styles from "../styles/Fullscreen.module.css";
-import { getDescription } from "../utils/readFiles";
-import { SideDrawer } from "../components/SideDrawer";
-import { Canvas } from "../components/Canvas";
-import {
-  PanelBoolean,
-  PanelColor,
-  PanelNumber,
-  PanelSelect,
-} from "../components/ExplorerControls";
-import { ExplorerPanel } from "../components/ExplorerPanel";
-import { useWindowSize } from "../utils/hooks/useWindowResize";
-import { radians, rgb } from "../utils/ctxHelpers";
 import Head from "next/head";
+import { useEffect, useState } from "react";
+import { Canvas } from "../components/Canvas";
+import { PanelBoolean, PanelColor, PanelNumber, PanelSelect } from "../components/ExplorerControls";
+import { ExplorerPanel } from "../components/ExplorerPanel";
+import { NavElement } from "../components/Navbar";
+import { SideDrawer } from "../components/SideDrawer";
+import styles from "../styles/Fullscreen.module.css";
+import { radians, rgb } from "../utils/ctxHelpers";
+import { useWindowSize } from "../utils/hooks/useWindowResize";
+import { getDescription } from "../utils/readFiles";
 import { remapper } from "../utils/scaling";
 
 const defaultTree = {
@@ -136,17 +131,15 @@ const FractalTree = ({ description }: Props) => {
     config.angle *
       (config.branches % 2 === 0
         ? Math.floor(config.branches / 2) - 0.5
-        : Math.floor(config.branches / 2))
+        : Math.floor(config.branches / 2)),
   );
   const configAngle = radians(-config.angle);
 
   const remapR = remapper([0, 10], [100, 150]);
   const remapG = remapper([0, 10], [100, 255]);
-  const strokeStyles = [...new Array(config.maxIterations)].map(
-    (_, iteration) => {
-      return rgb(remapR(iteration), remapG(iteration), 100);
-    }
-  );
+  const strokeStyles = [...new Array(config.maxIterations)].map((_, iteration) => {
+    return rgb(remapR(iteration), remapG(iteration), 100);
+  });
 
   useEffect(() => {
     if (!ctx || !width || !height) return;
@@ -170,11 +163,7 @@ const FractalTree = ({ description }: Props) => {
       for (let i = 0; i < config.branches; i++) {
         ctx.save();
         ctx.rotate(configAngle * i);
-        branch(
-          len * config.lengthFactor,
-          weight * config.widthFactor,
-          iteration + 1
-        );
+        branch(len * config.lengthFactor, weight * config.widthFactor, iteration + 1);
         ctx.restore();
       }
     };

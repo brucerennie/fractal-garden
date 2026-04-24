@@ -1,16 +1,13 @@
 import Head from "next/head";
 import { useEffect, useState } from "react";
 import { Canvas } from "../components/Canvas";
-import {
-  PanelColor,
-  PanelNumber,
-} from "../components/ExplorerControls";
+import { PanelColor, PanelNumber } from "../components/ExplorerControls";
 import { ExplorerPanel } from "../components/ExplorerPanel";
 import { NavElement } from "../components/Navbar";
 import { SideDrawer } from "../components/SideDrawer";
 import styles from "../styles/Fullscreen.module.css";
-import { getDescription } from "../utils/readFiles";
 import { useWindowSize } from "../utils/hooks/useWindowResize";
+import { getDescription } from "../utils/readFiles";
 
 type Props = {
   description: string;
@@ -74,9 +71,9 @@ function parseHexColor(hex: string) {
   const clean = hex.replace("#", "");
 
   return {
-    r: parseInt(clean.slice(0, 2), 16),
-    g: parseInt(clean.slice(2, 4), 16),
-    b: parseInt(clean.slice(4, 6), 16),
+    r: Number.parseInt(clean.slice(0, 2), 16),
+    g: Number.parseInt(clean.slice(2, 4), 16),
+    b: Number.parseInt(clean.slice(4, 6), 16),
   };
 }
 
@@ -106,12 +103,10 @@ const Buddhabrot = ({ description }: Props) => {
 
     const mapToPixel = (x: number, y: number) => {
       const px = Math.floor(
-        ((x - viewport.minX) / (viewport.maxX - viewport.minX)) *
-          (renderWidth - 1)
+        ((x - viewport.minX) / (viewport.maxX - viewport.minX)) * (renderWidth - 1),
       );
       const py = Math.floor(
-        ((viewport.maxY - y) / (viewport.maxY - viewport.minY)) *
-          (renderHeight - 1)
+        ((viewport.maxY - y) / (viewport.maxY - viewport.minY)) * (renderHeight - 1),
       );
 
       return [px, py] as const;
@@ -124,20 +119,12 @@ const Buddhabrot = ({ description }: Props) => {
       for (let i = 0; i < histogram.length; i++) {
         const count = histogram[i];
         const normalized =
-          count === 0 || logMax === 0
-            ? 0
-            : Math.log(1 + count * config.exposure) / logMax;
+          count === 0 || logMax === 0 ? 0 : Math.log(1 + count * config.exposure) / logMax;
 
         const idx = i * 4;
-        data[idx] = Math.round(
-          background.r + (foreground.r - background.r) * normalized
-        );
-        data[idx + 1] = Math.round(
-          background.g + (foreground.g - background.g) * normalized
-        );
-        data[idx + 2] = Math.round(
-          background.b + (foreground.b - background.b) * normalized
-        );
+        data[idx] = Math.round(background.r + (foreground.r - background.r) * normalized);
+        data[idx + 1] = Math.round(background.g + (foreground.g - background.g) * normalized);
+        data[idx + 2] = Math.round(background.b + (foreground.b - background.b) * normalized);
         data[idx + 3] = 255;
       }
 
@@ -158,12 +145,7 @@ const Buddhabrot = ({ description }: Props) => {
       for (let i = 0; i < orbit.length; i++) {
         const [x, y] = orbit[i];
 
-        if (
-          x < viewport.minX ||
-          x > viewport.maxX ||
-          y < viewport.minY ||
-          y > viewport.maxY
-        ) {
+        if (x < viewport.minX || x > viewport.maxX || y < viewport.minY || y > viewport.maxY) {
           continue;
         }
 

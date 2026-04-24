@@ -8,19 +8,13 @@ import { SideDrawer } from "../components/SideDrawer";
 import styles from "../styles/Fullscreen.module.css";
 import { useWindowSize } from "../utils/hooks/useWindowResize";
 import { getDescription } from "../utils/readFiles";
-import { Scalable } from "../utils/scaling";
+import type { Scalable } from "../utils/scaling";
 
 interface Transformation extends Scalable {
   matrix: number[][];
 }
 
-type Fern =
-  | "tree"
-  | "fishbone"
-  | "culcita"
-  | "modifiedBarnsley"
-  | "cyclosorus"
-  | "barnsley";
+type Fern = "tree" | "fishbone" | "culcita" | "modifiedBarnsley" | "cyclosorus" | "barnsley";
 
 type Config = {
   detail: number;
@@ -200,10 +194,7 @@ const BarnsleyFern = ({ description }: Props) => {
 
     const availableWidth = width * (1 - 2 * padding);
     const availableHeight = height * (1 - 2 * padding);
-    const scale = Math.min(
-      availableWidth / (maxX - minX),
-      availableHeight / (maxY - minY)
-    );
+    const scale = Math.min(availableWidth / (maxX - minX), availableHeight / (maxY - minY));
     const drawWidth = (maxX - minX) * scale;
     const drawHeight = (maxY - minY) * scale;
     const xOffset = (width - drawWidth) / 2;

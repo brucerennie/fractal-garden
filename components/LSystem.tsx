@@ -1,15 +1,11 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
-import styles from "../styles/Fullscreen.module.css";
-import { useWindowSize } from "../utils/hooks/useWindowResize";
 import { Canvas } from "../components/Canvas";
+import styles from "../styles/Fullscreen.module.css";
 import { radians } from "../utils/ctxHelpers";
+import { useWindowSize } from "../utils/hooks/useWindowResize";
+import { PanelBoolean, PanelColor, PanelNumber } from "./ExplorerControls";
 import { ExplorerPanel } from "./ExplorerPanel";
-import {
-  PanelBoolean,
-  PanelColor,
-  PanelNumber,
-} from "./ExplorerControls";
 
 type Config = {
   iterations: number;
@@ -43,7 +39,7 @@ type Props = {
 function expandSentence(sentence: string, replace: Record<string, string>) {
   let nextSentence = "";
 
-  for (let char of sentence) {
+  for (const char of sentence) {
     nextSentence += replace[char] || char;
   }
 
@@ -69,10 +65,7 @@ function getFirstVisibleIteration(ruleset: Ruleset) {
 }
 
 const LSystem = ({ ruleset }: Props) => {
-  const minVisibleIteration = Math.max(
-    ruleset.minIterations,
-    getFirstVisibleIteration(ruleset)
-  );
+  const minVisibleIteration = Math.max(ruleset.minIterations, getFirstVisibleIteration(ruleset));
   const [config, setConfig] = useState<Config>(() => ({
     iterations: ruleset.maxIterations,
     animateIterations: true,
@@ -87,9 +80,9 @@ const LSystem = ({ ruleset }: Props) => {
 
     let rotationDirection = 1;
     let weight = 5;
-    let weightIncrement = 0;
-    let scale = 1;
-    let angleIncrement = 0;
+    const weightIncrement = 0;
+    const scale = 1;
+    const angleIncrement = 0;
     let len = 0;
     let angle = 0;
     let sentence = "";
@@ -103,14 +96,11 @@ const LSystem = ({ ruleset }: Props) => {
       ctx.fillRect(0, 0, width, height);
       ctx.strokeStyle = config.ruleset.color;
 
-      let initialLength = config.ruleset.initLength({ width, height });
+      const initialLength = config.ruleset.initLength({ width, height });
       angle = config.ruleset.angle;
       len = len || initialLength;
 
-      const [xOff, yOff] = config.ruleset.initTranslation(
-        { width, height },
-        initialLength
-      );
+      const [xOff, yOff] = config.ruleset.initTranslation({ width, height }, initialLength);
       ctx.translate(xOff, yOff);
       config.ruleset.initRotation && config.ruleset.initRotation(ctx, config);
     };
@@ -165,7 +155,7 @@ const LSystem = ({ ruleset }: Props) => {
       let newSentence = "";
       commonSetup();
 
-      for (let char of sentence) {
+      for (const char of sentence) {
         newSentence += config.ruleset.replace[char] || char;
         const drawFunc = drawRules[char];
         drawFunc();
@@ -188,9 +178,7 @@ const LSystem = ({ ruleset }: Props) => {
           return {
             ...old,
             iterations:
-              newIterations > config.ruleset.maxIterations
-                ? minVisibleIteration
-                : newIterations,
+              newIterations > config.ruleset.maxIterations ? minVisibleIteration : newIterations,
           };
         });
       }, 1000);

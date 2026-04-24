@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useEffect } from "react";
+import { type Dispatch, type SetStateAction, useEffect } from "react";
 import { constrain } from "../ctxHelpers";
 
 type OrbitZoomConfig = {
@@ -59,13 +59,12 @@ export function useOrbitZoomControls<T extends OrbitZoomConfig>({
 
       setConfig((old) => ({
         ...old,
-        autoRotate:
-          typeof old.autoRotate === "boolean" ? false : old.autoRotate,
+        autoRotate: typeof old.autoRotate === "boolean" ? false : old.autoRotate,
         rotationY: currentDragState.config.rotationY + deltaX * 180,
         rotationX: constrain(
           currentDragState.config.rotationX + deltaY * 120,
           -rotationLimit,
-          rotationLimit
+          rotationLimit,
         ),
       }));
     };
@@ -80,12 +79,11 @@ export function useOrbitZoomControls<T extends OrbitZoomConfig>({
 
       setConfig((old) => ({
         ...old,
-        autoRotate:
-          typeof old.autoRotate === "boolean" ? false : old.autoRotate,
+        autoRotate: typeof old.autoRotate === "boolean" ? false : old.autoRotate,
         cameraDistance: constrain(
           old.cameraDistance * (event.deltaY > 0 ? 1.08 : 0.92),
           minDistance,
-          maxDistance
+          maxDistance,
         ),
       }));
     };

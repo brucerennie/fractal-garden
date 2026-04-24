@@ -115,10 +115,9 @@ function projectPoint(
   width: number,
   height: number,
   scale: number,
-  cameraDistance: number
+  cameraDistance: number,
 ) {
-  const perspective =
-    PROJECTION_FOCAL_LENGTH / Math.max(cameraDistance - point.z, 0.2);
+  const perspective = PROJECTION_FOCAL_LENGTH / Math.max(cameraDistance - point.z, 0.2);
 
   return {
     x: width / 2 + point.x * scale * perspective,
@@ -151,13 +150,13 @@ function shadeColor(hex: string, shade: number, alpha: number) {
 
   return `rgba(${Math.min(255, Math.round(r * factor))}, ${Math.min(
     255,
-    Math.round(g * factor)
+    Math.round(g * factor),
   )}, ${Math.min(255, Math.round(b * factor))}, ${alpha})`;
 }
 
 export function generateVoxelFractal(
   iterations: number,
-  keepCube: (x: number, y: number, z: number) => boolean
+  keepCube: (x: number, y: number, z: number) => boolean,
 ) {
   let cubes: WorkingCube[] = [
     {
@@ -208,10 +207,7 @@ export function generateVoxelFractal(
   }));
 }
 
-export function generateMoselySnowflake(
-  iterations: number,
-  variant: "lighter" | "heavier"
-) {
+export function generateMoselySnowflake(iterations: number, variant: "lighter" | "heavier") {
   return generateVoxelFractal(iterations, (x, y, z) => {
     const isCorner = Math.abs(x) === 1 && Math.abs(y) === 1 && Math.abs(z) === 1;
     const isCenter = x === 0 && y === 0 && z === 0;
@@ -227,7 +223,7 @@ export function generateMoselySnowflake(
 export function generateVicsekFractal3D(iterations: number) {
   return generateVoxelFractal(
     iterations,
-    (x, y, z) => Math.abs(x) + Math.abs(y) + Math.abs(z) <= 1
+    (x, y, z) => Math.abs(x) + Math.abs(y) + Math.abs(z) <= 1,
   );
 }
 
@@ -246,15 +242,13 @@ export function drawVoxelScene(
   width: number,
   height: number,
   cubes: Cube[],
-  options: VoxelDrawOptions
+  options: VoxelDrawOptions,
 ) {
   const rotationX = radians(options.rotationX);
   const rotationY = radians(options.rotationY);
   const scale = Math.min(width, height) * 0.3;
   const faces: Face[] = [];
-  const occupied = new Set(
-    cubes.map((cube) => `${cube.gridX},${cube.gridY},${cube.gridZ}`)
-  );
+  const occupied = new Set(cubes.map((cube) => `${cube.gridX},${cube.gridY},${cube.gridZ}`));
 
   ctx.fillStyle = options.background;
   ctx.fillRect(0, 0, width, height);
@@ -274,7 +268,7 @@ export function drawVoxelScene(
     ].map((vertex) => rotatePoint(vertex, rotationX, rotationY));
 
     const projected = vertices.map((vertex) =>
-      projectPoint(vertex, width, height, scale, options.cameraDistance)
+      projectPoint(vertex, width, height, scale, options.cameraDistance),
     );
 
     for (let faceIndex = 0; faceIndex < FACE_DEFS.length; faceIndex++) {
@@ -291,10 +285,10 @@ export function drawVoxelScene(
         continue;
       }
 
-      const points = faceDef.indices.map((index) => [
-        projected[index].x,
-        projected[index].y,
-      ]) as [number, number][];
+      const points = faceDef.indices.map((index) => [projected[index].x, projected[index].y]) as [
+        number,
+        number,
+      ][];
 
       let depth = 0;
       for (let j = 0; j < faceDef.indices.length; j++) {

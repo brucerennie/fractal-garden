@@ -1,10 +1,10 @@
-import LSystem, { Ruleset } from "../../components/LSystem";
-import { NavElement } from "../../components/Navbar";
-import styles from "../../styles/Fullscreen.module.css";
-import { SideDrawer } from "../../components/SideDrawer";
-import { getDescription } from "../../utils/readFiles";
-import { radians } from "../../utils/ctxHelpers";
 import Head from "next/head";
+import LSystem, { type Ruleset } from "../../components/LSystem";
+import { NavElement } from "../../components/Navbar";
+import { SideDrawer } from "../../components/SideDrawer";
+import styles from "../../styles/Fullscreen.module.css";
+import { radians } from "../../utils/ctxHelpers";
+import { getDescription } from "../../utils/readFiles";
 
 export async function getStaticProps() {
   const description = await getDescription("sierpinski-triangle.md");
@@ -32,10 +32,7 @@ const SierpinskiTriangle = ({ description }: Props) => {
     initLength: (sizes) => Math.min(sizes.width, sizes.height),
     initTranslation: (sizes, initialLength) => {
       const totalHeight = (initialLength * Math.sqrt(3)) / 2;
-      return [
-        sizes.width / 2 - initialLength / 2,
-        sizes.height - (sizes.height - totalHeight) / 2,
-      ];
+      return [sizes.width / 2 - initialLength / 2, sizes.height - (sizes.height - totalHeight) / 2];
     },
     initRotation: (ctx) => ctx.rotate(radians(90)),
     divideFactor: 2,

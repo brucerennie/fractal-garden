@@ -1,17 +1,13 @@
 import Head from "next/head";
 import { useEffect, useState } from "react";
 import { Canvas } from "../components/Canvas";
-import {
-  PanelBoolean,
-  PanelColor,
-  PanelNumber,
-} from "../components/ExplorerControls";
+import { PanelBoolean, PanelColor, PanelNumber } from "../components/ExplorerControls";
 import { ExplorerPanel } from "../components/ExplorerPanel";
 import { NavElement } from "../components/Navbar";
 import { SideDrawer } from "../components/SideDrawer";
 import styles from "../styles/Fullscreen.module.css";
-import { getDescription } from "../utils/readFiles";
 import { useWindowSize } from "../utils/hooks/useWindowResize";
+import { getDescription } from "../utils/readFiles";
 
 type Props = {
   description: string;
@@ -46,12 +42,7 @@ function measureTSquareBounds(iterations: number, ratio: number): Bounds {
     maxY: Number.NEGATIVE_INFINITY,
   };
 
-  const measure = (
-    centerX: number,
-    centerY: number,
-    size: number,
-    depth: number
-  ) => {
+  const measure = (centerX: number, centerY: number, size: number, depth: number) => {
     const half = size / 2;
     bounds.minX = Math.min(bounds.minX, centerX - half);
     bounds.maxX = Math.max(bounds.maxX, centerX + half);
@@ -97,9 +88,7 @@ const TSquareFractal = ({ description }: Props) => {
       setConfig((old) => ({
         ...old,
         iterations:
-          old.iterations >= MAX_ITERATIONS
-            ? 0
-            : Math.min(old.iterations + 1, MAX_ITERATIONS),
+          old.iterations >= MAX_ITERATIONS ? 0 : Math.min(old.iterations + 1, MAX_ITERATIONS),
       }));
     }, delay);
 
@@ -114,7 +103,7 @@ const TSquareFractal = ({ description }: Props) => {
     const drawHeight = bounds.maxY - bounds.minY;
     const scale = Math.min(
       (width * (1 - 2 * PADDING)) / drawWidth,
-      (height * (1 - 2 * PADDING)) / drawHeight
+      (height * (1 - 2 * PADDING)) / drawHeight,
     );
     const xOffset = (width - drawWidth * scale) / 2 - bounds.minX * scale;
     const yOffset = (height - drawHeight * scale) / 2 - bounds.minY * scale;
@@ -127,7 +116,7 @@ const TSquareFractal = ({ description }: Props) => {
         xOffset + centerX * scale - half,
         yOffset + centerY * scale - half,
         scaledSize,
-        scaledSize
+        scaledSize,
       );
       if (config.fillSquares) {
         ctx.fill();
@@ -138,12 +127,7 @@ const TSquareFractal = ({ description }: Props) => {
       ctx.closePath();
     };
 
-    const drawTSquare = (
-      centerX: number,
-      centerY: number,
-      size: number,
-      depth: number
-    ) => {
+    const drawTSquare = (centerX: number, centerY: number, size: number, depth: number) => {
       drawSquare(centerX, centerY, size);
 
       if (depth >= config.iterations) return;
@@ -187,19 +171,10 @@ const TSquareFractal = ({ description }: Props) => {
         />
       </Head>
       <main className={styles.fullScreen}>
-        <ExplorerPanel
-          data={config}
-          mode="pattern"
-          onUpdate={handleUpdate}
-        >
+        <ExplorerPanel data={config} mode="pattern" onUpdate={handleUpdate}>
           <PanelColor path="background" />
           <PanelColor path="color" />
-          <PanelNumber
-            path="iterations"
-            min={0}
-            max={MAX_ITERATIONS}
-            step={1}
-          />
+          <PanelNumber path="iterations" min={0} max={MAX_ITERATIONS} step={1} />
           <PanelNumber path="ratio" min={0.25} max={0.75} step={0.01} />
           <PanelNumber path="lineWidth" min={0.5} max={4} step={0.1} />
           <PanelBoolean path="animateIterations" />

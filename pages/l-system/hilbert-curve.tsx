@@ -1,10 +1,10 @@
-import LSystem, { Ruleset } from "../../components/LSystem";
+import LSystem, { type Ruleset } from "../../components/LSystem";
 import { NavElement } from "../../components/Navbar";
 import styles from "../../styles/Fullscreen.module.css";
 
+import Head from "next/head";
 import { SideDrawer } from "../../components/SideDrawer";
 import { getDescription } from "../../utils/readFiles";
-import Head from "next/head";
 
 export async function getStaticProps() {
   const description = await getDescription("hilbert-curve.md");

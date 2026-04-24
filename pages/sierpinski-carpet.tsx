@@ -1,17 +1,13 @@
-import React, { useEffect, useState } from "react";
-import { NavElement } from "../components/Navbar";
-import styles from "../styles/Fullscreen.module.css";
-import { getDescription } from "../utils/readFiles";
-import { SideDrawer } from "../components/SideDrawer";
-import { useWindowSize } from "../utils/hooks/useWindowResize";
-import { Canvas } from "../components/Canvas";
 import Head from "next/head";
-import {
-  PanelBoolean,
-  PanelColor,
-  PanelNumber,
-} from "../components/ExplorerControls";
+import { useEffect, useState } from "react";
+import { Canvas } from "../components/Canvas";
+import { PanelBoolean, PanelColor, PanelNumber } from "../components/ExplorerControls";
 import { ExplorerPanel } from "../components/ExplorerPanel";
+import { NavElement } from "../components/Navbar";
+import { SideDrawer } from "../components/SideDrawer";
+import styles from "../styles/Fullscreen.module.css";
+import { useWindowSize } from "../utils/hooks/useWindowResize";
+import { getDescription } from "../utils/readFiles";
 
 type Config = {
   maxIterations: number;
@@ -60,17 +56,14 @@ const SierpinskiCarpetComponent = ({ description }: Props) => {
       const ratio = window.devicePixelRatio || 1;
       ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
 
-      ctx.translate(
-        (window.innerWidth - length) / 2,
-        (window.innerHeight - length) / 2
-      );
+      ctx.translate((window.innerWidth - length) / 2, (window.innerHeight - length) / 2);
       sierpinskiCarpet(length, { x: 0, y: 0 }, 0);
     };
 
     const sierpinskiCarpet = (
       len: number,
       coordinates: { x: number; y: number },
-      iterations: number
+      iterations: number,
     ) => {
       if (iterations >= config.maxIterations) return;
       ctx.fillStyle = config.color;

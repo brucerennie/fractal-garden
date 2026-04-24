@@ -1,11 +1,7 @@
 import Head from "next/head";
 import { useEffect, useRef, useState } from "react";
 import { WebGLCanvas } from "../components/Canvas";
-import {
-  PanelBoolean,
-  PanelColor,
-  PanelNumber,
-} from "../components/ExplorerControls";
+import { PanelBoolean, PanelColor, PanelNumber } from "../components/ExplorerControls";
 import { ExplorerPanel } from "../components/ExplorerPanel";
 import { NavElement } from "../components/Navbar";
 import { SideDrawer } from "../components/SideDrawer";
@@ -13,10 +9,9 @@ import styles from "../styles/Fullscreen.module.css";
 import { constrain, radians } from "../utils/ctxHelpers";
 import { useWindowSize } from "../utils/hooks/useWindowResize";
 import { getDescription } from "../utils/readFiles";
-import { scrollToDescription } from "../utils/scrollToDescription";
 import { createShaderProgram } from "../utils/shaders/compileShader";
-import fragmentShader from "../utils/shaders/mandelbulb.frag";
 import vertexShader from "../utils/shaders/mandelbrot.vert";
+import fragmentShader from "../utils/shaders/mandelbulb.frag";
 
 type Props = {
   description: string;
@@ -82,11 +77,7 @@ const Mandelbulb = ({ description }: Props) => {
 
     gl.useProgram(program);
     gl.bindBuffer(gl.ARRAY_BUFFER, vertBuf);
-    gl.bufferData(
-      gl.ARRAY_BUFFER,
-      new Float32Array([-1, -1, 3, -1, -1, 3]),
-      gl.STATIC_DRAW
-    );
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
 
     const aPositionLocation = gl.getAttribLocation(program, "aPosition");
     gl.enableVertexAttribArray(aPositionLocation);
@@ -95,10 +86,7 @@ const Mandelbulb = ({ description }: Props) => {
     const resolutionLocation = gl.getUniformLocation(program, "u_resolution");
     const rotationLocation = gl.getUniformLocation(program, "u_rotation");
     const panLocation = gl.getUniformLocation(program, "u_pan");
-    const cameraDistanceLocation = gl.getUniformLocation(
-      program,
-      "u_cameraDistance"
-    );
+    const cameraDistanceLocation = gl.getUniformLocation(program, "u_cameraDistance");
     const powerLocation = gl.getUniformLocation(program, "u_power");
     const detailLocation = gl.getUniformLocation(program, "u_detail");
     const backgroundLocation = gl.getUniformLocation(program, "u_background");
@@ -120,9 +108,9 @@ const Mandelbulb = ({ description }: Props) => {
     const parseHexColor = (hex: string) => {
       const clean = hex.replace("#", "");
       return [
-        parseInt(clean.slice(0, 2), 16) / 255,
-        parseInt(clean.slice(2, 4), 16) / 255,
-        parseInt(clean.slice(4, 6), 16) / 255,
+        Number.parseInt(clean.slice(0, 2), 16) / 255,
+        Number.parseInt(clean.slice(2, 4), 16) / 255,
+        Number.parseInt(clean.slice(4, 6), 16) / 255,
       ] as const;
     };
 
@@ -139,11 +127,7 @@ const Mandelbulb = ({ description }: Props) => {
         currentConfig.rotationY + (currentConfig.autoRotate ? elapsed * 18 : 0);
 
       gl.uniform2f(resolutionLocation, width * ratio, height * ratio);
-      gl.uniform2f(
-        rotationLocation,
-        radians(currentConfig.rotationX),
-        radians(animatedRotationY)
-      );
+      gl.uniform2f(rotationLocation, radians(currentConfig.rotationX), radians(animatedRotationY));
       gl.uniform2f(panLocation, currentConfig.offsetX, currentConfig.offsetY);
       gl.uniform1f(cameraDistanceLocation, currentConfig.cameraDistance);
       gl.uniform1f(powerLocation, currentConfig.power);
@@ -208,11 +192,7 @@ const Mandelbulb = ({ description }: Props) => {
       setConfig((old) => ({
         ...old,
         autoRotate: false,
-        cameraDistance: constrain(
-          old.cameraDistance * (event.deltaY > 0 ? 1.08 : 0.92),
-          1.5,
-          8
-        ),
+        cameraDistance: constrain(old.cameraDistance * (event.deltaY > 0 ? 1.08 : 0.92), 1.5, 8),
       }));
     };
 
@@ -282,12 +262,7 @@ const Mandelbulb = ({ description }: Props) => {
           <PanelBoolean path="autoRotate" />
         </ExplorerPanel>
         <div className={styles.fullScreen}>
-          <WebGLCanvas
-            setGl={setGl}
-            width={width}
-            height={height}
-            setCnv={setCnv}
-          />
+          <WebGLCanvas setGl={setGl} width={width} height={height} setCnv={setCnv} />
         </div>
         <SideDrawer description={description} />
         <NavElement />

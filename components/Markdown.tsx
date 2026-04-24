@@ -1,14 +1,9 @@
-import ReactMarkdown from "react-markdown";
-// import Prism from "prismjs";
-// import "prismjs/plugins/toolbar/prism-toolbar";
-// import "prismjs/plugins/copy-to-clipboard/prism-copy-to-clipboard";
-
-import { useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import rehypeRaw from "rehype-raw";
-import rehypeKatex from "rehype-katex";
+import ReactMarkdown from "react-markdown";
 import rehypeHighlight from "rehype-highlight";
+import rehypeKatex from "rehype-katex";
+import rehypeRaw from "rehype-raw";
 import remarkMath from "remark-math";
 
 type HeadingResolverProps = {
@@ -16,13 +11,10 @@ type HeadingResolverProps = {
   children: JSX.Element[];
 };
 
-const HeadingRenderer: React.FC<HeadingResolverProps> = ({
-  level,
-  children,
-}) => {
+const HeadingRenderer: React.FC<HeadingResolverProps> = ({ level, children }) => {
   const heading = children[0]?.props?.value || children[0];
 
-  let anchor = (typeof heading === "string" ? heading.toLowerCase() : "")
+  const anchor = (typeof heading === "string" ? heading.toLowerCase() : "")
     .replace(/[^a-zA-Z0-9 ]/g, "")
     .replace(/ /g, "-");
 
@@ -76,8 +68,7 @@ const ParagraphRenderer = (paragraph: {
   }
 
   const className =
-    paragraph.children?.length &&
-    (paragraph.children[0] as unknown as string)[0] === "—"
+    paragraph.children?.length && (paragraph.children[0] as unknown as string)[0] === "—"
       ? "quote-author"
       : "";
 
@@ -125,11 +116,7 @@ export const RenderMarkdown = ({ content }: Props) => {
 
   return (
     <ReactMarkdown
-      rehypePlugins={[
-        rehypeRaw,
-        rehypeKatex,
-        [rehypeHighlight, { languages: { glsl } }],
-      ]}
+      rehypePlugins={[rehypeRaw, rehypeKatex, [rehypeHighlight, { languages: { glsl } }]]}
       remarkPlugins={[remarkMath]}
       components={MarkdownRenderers}
     >

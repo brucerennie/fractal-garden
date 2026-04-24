@@ -1,17 +1,13 @@
 import Head from "next/head";
 import { useEffect, useState } from "react";
 import { Canvas } from "../../components/Canvas";
-import {
-  PanelBoolean,
-  PanelColor,
-  PanelNumber,
-} from "../../components/ExplorerControls";
+import { PanelBoolean, PanelColor, PanelNumber } from "../../components/ExplorerControls";
 import { ExplorerPanel } from "../../components/ExplorerPanel";
 import { NavElement } from "../../components/Navbar";
 import { SideDrawer } from "../../components/SideDrawer";
 import styles from "../../styles/Fullscreen.module.css";
-import { getDescription } from "../../utils/readFiles";
 import { useWindowSize } from "../../utils/hooks/useWindowResize";
+import { getDescription } from "../../utils/readFiles";
 
 type Props = {
   description: string;
@@ -44,7 +40,7 @@ function generateGosperSentence(iterations: number) {
   for (let i = 0; i < iterations; i++) {
     let nextSentence = "";
 
-    for (let char of sentence) {
+    for (const char of sentence) {
       if (char === "X") {
         nextSentence += "X+YF++YF-FX--FXFX-YF+";
         continue;
@@ -77,7 +73,7 @@ function traceGosperCurve(sentence: string) {
     maxY: y,
   };
 
-  for (let char of sentence) {
+  for (const char of sentence) {
     if (char === "F") {
       x += Math.cos(angle);
       y += Math.sin(angle);
@@ -107,7 +103,7 @@ function getTransform(bounds: Bounds, width: number, height: number) {
   const curveHeight = Math.max(bounds.maxY - bounds.minY, 1);
   const scale = Math.min(
     (width * (1 - 2 * PADDING)) / curveWidth,
-    (height * (1 - 2 * PADDING)) / curveHeight
+    (height * (1 - 2 * PADDING)) / curveHeight,
   );
 
   const top = (height - curveHeight * scale) / 2;
@@ -196,12 +192,7 @@ const GosperCurve = ({ description }: Props) => {
         <ExplorerPanel data={config} mode="pattern" onUpdate={handleUpdate}>
           <PanelColor path="background" />
           <PanelColor path="color" />
-          <PanelNumber
-            path="iterations"
-            min={1}
-            max={MAX_ITERATIONS}
-            step={1}
-          />
+          <PanelNumber path="iterations" min={1} max={MAX_ITERATIONS} step={1} />
           <PanelNumber path="lineWidth" min={0.5} max={4} step={0.1} />
           <PanelBoolean path="animateIterations" />
         </ExplorerPanel>

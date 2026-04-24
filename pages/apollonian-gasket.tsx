@@ -1,11 +1,7 @@
 import Head from "next/head";
 import { useEffect, useState } from "react";
 import { Canvas } from "../components/Canvas";
-import {
-  PanelBoolean,
-  PanelColor,
-  PanelNumber,
-} from "../components/ExplorerControls";
+import { PanelBoolean, PanelColor, PanelNumber } from "../components/ExplorerControls";
 import { ExplorerPanel } from "../components/ExplorerPanel";
 import { NavElement } from "../components/Navbar";
 import { SideDrawer } from "../components/SideDrawer";
@@ -39,12 +35,7 @@ type Config = {
 const MAX_ITERATIONS = 7;
 const PADDING = 0.08;
 
-function createCircle(
-  x: number,
-  y: number,
-  bend: number,
-  depth: number
-): Circle {
+function createCircle(x: number, y: number, bend: number, depth: number): Circle {
   return {
     x,
     y,
@@ -54,20 +45,10 @@ function createCircle(
   };
 }
 
-function reflectCircle(
-  excluded: Circle,
-  a: Circle,
-  b: Circle,
-  c: Circle,
-  depth: number
-) {
+function reflectCircle(excluded: Circle, a: Circle, b: Circle, c: Circle, depth: number) {
   const bend = 2 * (a.bend + b.bend + c.bend) - excluded.bend;
-  const weightedX =
-    2 * (a.bend * a.x + b.bend * b.x + c.bend * c.x) -
-    excluded.bend * excluded.x;
-  const weightedY =
-    2 * (a.bend * a.y + b.bend * b.y + c.bend * c.y) -
-    excluded.bend * excluded.y;
+  const weightedX = 2 * (a.bend * a.x + b.bend * b.x + c.bend * c.x) - excluded.bend * excluded.x;
+  const weightedY = 2 * (a.bend * a.y + b.bend * b.y + c.bend * c.y) - excluded.bend * excluded.y;
 
   return createCircle(weightedX / bend, weightedY / bend, bend, depth);
 }
@@ -83,7 +64,7 @@ function getInitialConfiguration() {
       centerDistance * Math.cos(angle),
       centerDistance * Math.sin(angle),
       innerBend,
-      0
+      0,
     );
   });
 
@@ -94,13 +75,7 @@ function buildGasket(iterations: number) {
   const [outer, c1, c2, c3] = getInitialConfiguration();
   const circles = [outer, c1, c2, c3];
 
-  const fillGap = (
-    a: Circle,
-    b: Circle,
-    c: Circle,
-    excluded: Circle,
-    depth: number
-  ) => {
+  const fillGap = (a: Circle, b: Circle, c: Circle, excluded: Circle, depth: number) => {
     if (depth > iterations) return;
 
     const next = reflectCircle(excluded, a, b, c, depth);
@@ -176,7 +151,7 @@ const ApollonianGasket = ({ description }: Props) => {
         height / 2 + circle.y * scale,
         circle.radius * scale,
         0,
-        Math.PI * 2
+        Math.PI * 2,
       );
 
       if (config.fillCircles && circle.bend > 0) {
@@ -215,19 +190,9 @@ const ApollonianGasket = ({ description }: Props) => {
         <ExplorerPanel data={config} mode="pattern" onUpdate={handleUpdate}>
           <PanelColor path="background" />
           <PanelColor path="color" />
-          <PanelNumber
-            path="iterations"
-            min={0}
-            max={MAX_ITERATIONS}
-            step={1}
-          />
+          <PanelNumber path="iterations" min={0} max={MAX_ITERATIONS} step={1} />
           <PanelBoolean path="animateIterations" />
-          <PanelNumber
-            path="lineWidth"
-            min={0.4}
-            max={3}
-            step={0.1}
-          />
+          <PanelNumber path="lineWidth" min={0.4} max={3} step={0.1} />
           <PanelBoolean path="fillCircles" />
           <PanelBoolean path="strokeCircles" />
           <PanelBoolean path="showOuterCircle" />

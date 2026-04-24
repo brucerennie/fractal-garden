@@ -1,11 +1,7 @@
 import Head from "next/head";
 import { useEffect, useRef, useState } from "react";
 import { Canvas } from "../components/Canvas";
-import {
-  PanelColor,
-  PanelNumber,
-  PanelSelect,
-} from "../components/ExplorerControls";
+import { PanelColor, PanelNumber, PanelSelect } from "../components/ExplorerControls";
 import { ExplorerPanel } from "../components/ExplorerPanel";
 import { NavElement } from "../components/Navbar";
 import { SideDrawer } from "../components/SideDrawer";
@@ -13,7 +9,6 @@ import styles from "../styles/Fullscreen.module.css";
 import { constrain } from "../utils/ctxHelpers";
 import { useWindowSize } from "../utils/hooks/useWindowResize";
 import { getDescription } from "../utils/readFiles";
-import { scrollToDescription } from "../utils/scrollToDescription";
 
 type Props = {
   description: string;
@@ -138,9 +133,7 @@ const LogisticMap = ({ description }: Props) => {
       if (!dragRef.current) return;
 
       const rect = canvas.getBoundingClientRect();
-      setConfig((old) =>
-        old.preset === "Custom" ? old : { ...old, preset: "Custom" }
-      );
+      setConfig((old) => (old.preset === "Custom" ? old : { ...old, preset: "Custom" }));
       if (dragRef.current.mode === "zoom") {
         const xRange = dragRef.current.view.rMax - dragRef.current.view.rMin;
         const yRange = dragRef.current.view.xMax - dragRef.current.view.xMin;
@@ -148,10 +141,8 @@ const LogisticMap = ({ description }: Props) => {
         const zoomFactor = Math.exp(deltaY * 2.2);
         const nextXRange = constrain(xRange * zoomFactor, MIN_RANGE, MAX_RANGE);
         const nextYRange = constrain(yRange * zoomFactor, MIN_RANGE, MAX_RANGE);
-        const focusR =
-          dragRef.current.view.rMin + dragRef.current.focusX * xRange;
-        const focusX =
-          dragRef.current.view.xMax - dragRef.current.focusY * yRange;
+        const focusR = dragRef.current.view.rMin + dragRef.current.focusX * xRange;
+        const focusX = dragRef.current.view.xMax - dragRef.current.focusY * yRange;
         const rMin = focusR - dragRef.current.focusX * nextXRange;
         const rMax = rMin + nextXRange;
         const xMax = focusX + dragRef.current.focusY * nextYRange;
@@ -168,10 +159,8 @@ const LogisticMap = ({ description }: Props) => {
 
       const xRange = dragRef.current.view.rMax - dragRef.current.view.rMin;
       const yRange = dragRef.current.view.xMax - dragRef.current.view.xMin;
-      const deltaX =
-        ((event.clientX - dragRef.current.clientX) / rect.width) * xRange;
-      const deltaY =
-        ((event.clientY - dragRef.current.clientY) / rect.height) * yRange;
+      const deltaX = ((event.clientX - dragRef.current.clientX) / rect.width) * xRange;
+      const deltaY = ((event.clientY - dragRef.current.clientY) / rect.height) * yRange;
 
       setView({
         rMin: dragRef.current.view.rMin - deltaX,
@@ -244,11 +233,7 @@ const LogisticMap = ({ description }: Props) => {
 
   const handleUpdate = (newData: Config) => {
     const merged = { ...config, ...newData };
-    if (
-      newData.preset &&
-      newData.preset !== config.preset &&
-      newData.preset !== "Custom"
-    ) {
+    if (newData.preset && newData.preset !== config.preset && newData.preset !== "Custom") {
       setView(PRESETS[newData.preset]);
     }
     setConfig(merged);
@@ -289,9 +274,7 @@ const LogisticMap = ({ description }: Props) => {
           <PanelSelect
             path="preset"
             label="Starting view"
-            optionLabels={logisticPresetOptions.map(
-              (option) => presetLabels[option]
-            )}
+            optionLabels={logisticPresetOptions.map((option) => presetLabels[option])}
             options={logisticPresetOptions}
           />
           <PanelNumber path="settleIterations" min={50} max={1000} step={10} />

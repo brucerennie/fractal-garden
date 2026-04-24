@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useMemo, useState } from "react";
+import { type ReactNode, useEffect, useMemo, useState } from "react";
 import DatGui, { DatFolder } from "react-dat-gui";
 import styles from "../styles/ExplorerPanel.module.css";
 import { scrollToDescription } from "../utils/scrollToDescription";
@@ -88,20 +88,15 @@ export function ExplorerPanel<T>({
 
     return combined.filter(
       (action, index) =>
-        combined.findIndex((candidate) => candidate.label === action.label) ===
-        index
+        combined.findIndex((candidate) => candidate.label === action.label) === index,
     );
   }, [actions]);
 
   const displayTitle = introTitle || pageTitle || defaults.introTitle;
   const folderTitle = (
     <div className={styles.folderTitle}>
-      <span className={styles.folderHeading}>
-        {controlsTitle ?? defaults.controlsTitle}
-      </span>
-      <span className={styles.folderHint}>
-        {controlsHint ?? defaults.controlsHint}
-      </span>
+      <span className={styles.folderHeading}>{controlsTitle ?? defaults.controlsTitle}</span>
+      <span className={styles.folderHint}>{controlsHint ?? defaults.controlsHint}</span>
     </div>
   ) as unknown as string;
 
@@ -130,12 +125,7 @@ export function ExplorerPanel<T>({
         ) : null}
       </div>
 
-      <DatGui
-        className="exploration-gui"
-        data={data}
-        labelWidth={160}
-        onUpdate={onUpdate}
-      >
+      <DatGui className="exploration-gui" data={data} labelWidth={160} onUpdate={onUpdate}>
         <DatFolder className="exploration-folder" closed={!defaultOpen} title={folderTitle}>
           {children}
         </DatFolder>

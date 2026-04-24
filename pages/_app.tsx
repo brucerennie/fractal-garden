@@ -10,10 +10,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <>
       <Head>
-        <Script
-          async
-          src="https://www.googletagmanager.com/gtag/js?id=G-5EP0KS9R28"
-        />
+        <Script async src="https://www.googletagmanager.com/gtag/js?id=G-5EP0KS9R28" />
         <Script id="gtaginit">
           {`
             window.dataLayer = window.dataLayer || [];
@@ -23,10 +20,7 @@ function MyApp({ Component, pageProps }: AppProps) {
             gtag('config', 'G-5EP0KS9R28');
           `}
         </Script>
-        <meta
-          name="viewport"
-          content="width=device-width, initial-scale=1, minimum-scale=1"
-        />
+        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
       </Head>
       <Component {...pageProps} />
       <PageSeo />

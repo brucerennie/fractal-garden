@@ -1,12 +1,7 @@
 import Head from "next/head";
 import { useEffect, useState } from "react";
 import { Canvas } from "../components/Canvas";
-import {
-  PanelBoolean,
-  PanelColor,
-  PanelNumber,
-  PanelSelect,
-} from "../components/ExplorerControls";
+import { PanelBoolean, PanelColor, PanelNumber, PanelSelect } from "../components/ExplorerControls";
 import { ExplorerPanel } from "../components/ExplorerPanel";
 import { NavElement } from "../components/Navbar";
 import { SideDrawer } from "../components/SideDrawer";
@@ -113,12 +108,7 @@ const VicsekFractal2D = ({ description }: Props) => {
 
       for (let i = 0; i < offsets.length; i++) {
         const [offsetX, offsetY] = offsets[i];
-        drawVicsek(
-          x + offsetX * nextLength,
-          y + offsetY * nextLength,
-          nextLength,
-          depth + 1
-        );
+        drawVicsek(x + offsetX * nextLength, y + offsetY * nextLength, nextLength, depth + 1);
       }
     };
 
@@ -161,12 +151,7 @@ const VicsekFractal2D = ({ description }: Props) => {
             optionLabels={variantOptions.map((option) => variantLabels[option])}
             options={variantOptions}
           />
-          <PanelNumber
-            path="iterations"
-            min={0}
-            max={MAX_ITERATIONS}
-            step={1}
-          />
+          <PanelNumber path="iterations" min={0} max={MAX_ITERATIONS} step={1} />
           <PanelBoolean path="animateIterations" />
           <PanelNumber path="lineWidth" min={0.2} max={3} step={0.1} />
           <PanelBoolean path="fillSquares" />

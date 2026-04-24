@@ -1,17 +1,16 @@
 import Head from "next/head";
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { WebGLCanvas } from "../components/Canvas";
 import { NavElement } from "../components/Navbar";
 import { SideDrawer } from "../components/SideDrawer";
 import { ViewportOverlay } from "../components/ViewportOverlay";
 import styles from "../styles/Fullscreen.module.css";
-import { getDescription } from "../utils/readFiles";
-import { scrollToDescription } from "../utils/scrollToDescription";
+import { useShaderViewportControls } from "../utils/hooks/useShaderViewportControls";
 import { useWindowSize } from "../utils/hooks/useWindowResize";
-import { WebGLCanvas } from "../components/Canvas";
-import vertexShader from "../utils/shaders/mandelbrot.vert";
+import { getDescription } from "../utils/readFiles";
 import fragmentShader from "../utils/shaders/burning-ship.frag";
 import { createShaderProgram } from "../utils/shaders/compileShader";
-import { useShaderViewportControls } from "../utils/hooks/useShaderViewportControls";
+import vertexShader from "../utils/shaders/mandelbrot.vert";
 
 type Props = {
   description: string;
@@ -55,11 +54,7 @@ const BurningShip = ({ description }: Props) => {
     if (!vertBuf) return;
 
     gl.bindBuffer(gl.ARRAY_BUFFER, vertBuf);
-    gl.bufferData(
-      gl.ARRAY_BUFFER,
-      new Float32Array([-1, -1, 3, -1, -1, 3]),
-      gl.STATIC_DRAW
-    );
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
 
     const aPositionLocation = gl.getAttribLocation(program, "aPosition");
     gl.enableVertexAttribArray(aPositionLocation);
@@ -69,11 +64,7 @@ const BurningShip = ({ description }: Props) => {
     const zoomSizeLocation = gl.getUniformLocation(program, "u_zoomSize");
     const resolutionLocation = gl.getUniformLocation(program, "u_resolution");
 
-    if (
-      centerLocation === null ||
-      zoomSizeLocation === null ||
-      resolutionLocation === null
-    ) {
+    if (centerLocation === null || zoomSizeLocation === null || resolutionLocation === null) {
       return;
     }
 
@@ -120,12 +111,7 @@ const BurningShip = ({ description }: Props) => {
       </Head>
       <main className={styles.fullScreen}>
         <div className={styles.fullScreen}>
-          <WebGLCanvas
-            setGl={setGl}
-            width={width}
-            height={height}
-            setCnv={setCnv}
-          />
+          <WebGLCanvas setGl={setGl} width={width} height={height} setCnv={setCnv} />
           <ViewportOverlay
             title="Burning Ship Fractal"
             lines={[

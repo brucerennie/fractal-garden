@@ -1,4 +1,4 @@
-import { MutableRefObject, useEffect } from "react";
+import { type MutableRefObject, useEffect } from "react";
 import { constrain } from "../ctxHelpers";
 
 type Viewport = {
@@ -81,7 +81,7 @@ export function useShaderViewportControls({
     const setViewportFromAnchor = (
       anchorWorld: [number, number],
       point: Point,
-      zoomSize: number
+      zoomSize: number,
     ) => {
       const normalized = pointToNormalized(point);
 
@@ -97,7 +97,7 @@ export function useShaderViewportControls({
 
     const getPointerPair = () => {
       const points = Array.from(activePointers.values());
-      return points.length >= 2 ? [points[0], points[1]] as const : null;
+      return points.length >= 2 ? ([points[0], points[1]] as const) : null;
     };
 
     const beginPinch = () => {
@@ -147,7 +147,7 @@ export function useShaderViewportControls({
         const nextZoomSize = constrain(
           pinchInitialZoom * (pinchInitialDistance / currentDistance),
           minZoomSize,
-          maxZoomSize
+          maxZoomSize,
         );
 
         setViewportFromAnchor(pinchAnchorWorld, pinchMidpoint, nextZoomSize);
@@ -155,11 +155,7 @@ export function useShaderViewportControls({
       }
 
       if (activePointers.size === 1 && dragAnchorWorld) {
-        setViewportFromAnchor(
-          dragAnchorWorld,
-          point,
-          viewportRef.current.zoomSize
-        );
+        setViewportFromAnchor(dragAnchorWorld, point, viewportRef.current.zoomSize);
       }
     };
 
@@ -197,7 +193,7 @@ export function useShaderViewportControls({
       const nextZoomSize = constrain(
         currentViewport.zoomSize * zoomFactor,
         minZoomSize,
-        maxZoomSize
+        maxZoomSize,
       );
 
       setViewportFromAnchor(anchorWorld, point, nextZoomSize);
@@ -219,12 +215,5 @@ export function useShaderViewportControls({
       canvas.removeEventListener("wheel", handleWheel);
       canvas.style.touchAction = "";
     };
-  }, [
-    canvas,
-    flipY,
-    maxZoomSize,
-    minZoomSize,
-    onViewportChange,
-    viewportRef,
-  ]);
+  }, [canvas, flipY, maxZoomSize, minZoomSize, onViewportChange, viewportRef]);
 }

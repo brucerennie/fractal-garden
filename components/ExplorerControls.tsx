@@ -1,4 +1,4 @@
-import { CSSProperties, ComponentProps, useEffect, useId, useRef, useState } from "react";
+import { type CSSProperties, type ComponentProps, useEffect, useId, useRef, useState } from "react";
 import { DatBoolean, DatSelect } from "react-dat-gui";
 import styles from "../styles/ExplorerPanel.module.css";
 
@@ -79,17 +79,11 @@ function humanizePath(path: string) {
     return LABEL_OVERRIDES[leaf];
   }
 
-  return normalizeLabelValue(leaf)
-    .split(" ")
-    .map(formatWord)
-    .join(" ");
+  return normalizeLabelValue(leaf).split(" ").map(formatWord).join(" ");
 }
 
 function humanizeOption(option: string) {
-  return normalizeLabelValue(option)
-    .split(" ")
-    .map(formatWord)
-    .join(" ");
+  return normalizeLabelValue(option).split(" ").map(formatWord).join(" ");
 }
 
 type BooleanProps = ComponentProps<typeof DatBoolean>;
@@ -200,9 +194,7 @@ function getControlWidthStyle(labelWidth?: number | string) {
   }
 
   const width =
-    typeof labelWidth === "number"
-      ? `calc(100% - ${labelWidth}px)`
-      : `calc(100% - ${labelWidth})`;
+    typeof labelWidth === "number" ? `calc(100% - ${labelWidth}px)` : `calc(100% - ${labelWidth})`;
 
   return { width };
 }
@@ -236,7 +228,7 @@ function constrainNumber(
   value: number,
   min?: number | null,
   max?: number | null,
-  step?: number | null
+  step?: number | null,
 ) {
   let next = clampValue(value, min, max);
 
@@ -302,12 +294,9 @@ function getContrastingSwatchText(hexColor: string) {
   const green = parseHexChannel(normalized.slice(3, 5)) / 255;
   const blue = parseHexChannel(normalized.slice(5, 7)) / 255;
   const channels = [red, green, blue].map((channel) =>
-    channel <= 0.03928
-      ? channel / 12.92
-      : Math.pow((channel + 0.055) / 1.055, 2.4)
+    channel <= 0.03928 ? channel / 12.92 : Math.pow((channel + 0.055) / 1.055, 2.4),
   );
-  const luminance =
-    channels[0] * 0.2126 + channels[1] * 0.7152 + channels[2] * 0.0722;
+  const luminance = channels[0] * 0.2126 + channels[1] * 0.7152 + channels[2] * 0.0722;
 
   return luminance > 0.58 ? DARK_SWATCH_TEXT : LIGHT_SWATCH_TEXT;
 }
@@ -324,8 +313,7 @@ export const PanelColor = ({
   const pickerId = useId();
   const containerRef = useRef<HTMLLIElement | null>(null);
   const rawValue = getValueFromPath(data, path);
-  const normalizedValue =
-    typeof rawValue === "string" ? normalizeHexColor(rawValue) : null;
+  const normalizedValue = typeof rawValue === "string" ? normalizeHexColor(rawValue) : null;
   const value = normalizedValue ?? "#000000";
   const [draftValue, setDraftValue] = useState(value);
   const [isOpen, setIsOpen] = useState(false);
@@ -375,19 +363,12 @@ export const PanelColor = ({
   };
 
   return (
-    <li
-      className={joinClassNames("cr", "color", className)}
-      ref={containerRef}
-      style={style}
-    >
+    <li className={joinClassNames("cr", "color", className)} ref={containerRef} style={style}>
       <div className={styles.customControl}>
         <span className="label-text" style={getLabelWidthStyle(labelWidth)}>
           {labelText}
         </span>
-        <div
-          className={styles.colorControl}
-          style={getControlWidthStyle(labelWidth)}
-        >
+        <div className={styles.colorControl} style={getControlWidthStyle(labelWidth)}>
           <button
             aria-controls={pickerId}
             aria-expanded={isOpen}
@@ -473,23 +454,18 @@ export const PanelNumber = ({
   _onUpdateValue,
 }: NumberProps) => {
   const rawValue = getValueFromPath(data, path);
-  const initialValue = isFiniteNumber(rawValue)
-    ? rawValue
-    : Number(rawValue ?? 0) || 0;
+  const initialValue = isFiniteNumber(rawValue) ? rawValue : Number(rawValue ?? 0) || 0;
   const value = constrainNumber(initialValue, min, max, step);
   const [draftValue, setDraftValue] = useState(formatNumberValue(value, step));
   const labelText = label ?? humanizePath(path);
-  const hasSlider =
-    disableSlider !== true &&
-    hasFiniteRange(min, max);
+  const hasSlider = disableSlider !== true && hasFiniteRange(min, max);
   const sliderMin = hasSlider ? (min as number) : 0;
   const sliderMax = hasSlider ? (max as number) : 0;
   const sliderPercent =
     hasSlider && sliderMax !== sliderMin
       ? (((value - sliderMin) / (sliderMax - sliderMin)) * 100).toFixed(2)
       : "0.00";
-  const numericStep =
-    typeof step === "number" && Number.isFinite(step) && step > 0 ? step : 1;
+  const numericStep = typeof step === "number" && Number.isFinite(step) && step > 0 ? step : 1;
 
   useEffect(() => {
     setDraftValue(formatNumberValue(value, step));
@@ -510,10 +486,7 @@ export const PanelNumber = ({
   };
 
   return (
-    <li
-      className={joinClassNames("cr", "number", className)}
-      style={style}
-    >
+    <li className={joinClassNames("cr", "number", className)} style={style}>
       <div className={styles.customControl}>
         <span className="label-text" style={getLabelWidthStyle(labelWidth)}>
           {labelText}
@@ -521,7 +494,7 @@ export const PanelNumber = ({
         <div
           className={joinClassNames(
             styles.numberControls,
-            !hasSlider && styles.numberControlsCompact
+            !hasSlider && styles.numberControlsCompact,
           )}
           style={getControlWidthStyle(labelWidth)}
         >
@@ -598,18 +571,10 @@ export const PanelNumber = ({
   );
 };
 
-export const PanelSelect = ({
-  label,
-  optionLabels,
-  options,
-  path,
-  ...props
-}: SelectProps) => (
+export const PanelSelect = ({ label, optionLabels, options, path, ...props }: SelectProps) => (
   <DatSelect
     label={label ?? humanizePath(path)}
-    optionLabels={
-      optionLabels ?? options?.map((option) => humanizeOption(String(option)))
-    }
+    optionLabels={optionLabels ?? options?.map((option) => humanizeOption(String(option)))}
     options={options}
     path={path}
     {...props}

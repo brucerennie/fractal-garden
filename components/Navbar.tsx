@@ -1,6 +1,6 @@
-import styles from "../styles/Navbar.module.css";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import styles from "../styles/Navbar.module.css";
 
 function useLinks() {
   const router = useRouter();
@@ -65,8 +65,7 @@ export const NavElement = () => {
         <a className={styles.linkButton}>
           <span className="icon-arrow-left">
             <span className="screen-reader-only">
-              Arrow Left Icon - When clicked, go to the previous fractal in the
-              exhibition.
+              Arrow Left Icon - When clicked, go to the previous fractal in the exhibition.
             </span>
           </span>
         </a>
@@ -75,8 +74,7 @@ export const NavElement = () => {
         <a className={styles.linkButton}>
           <span className="icon-home3">
             <span className="screen-reader-only">
-              Home Icon - When clicked, go back to the Home Page of the
-              Exhibition.
+              Home Icon - When clicked, go back to the Home Page of the Exhibition.
             </span>
           </span>
         </a>
@@ -85,8 +83,7 @@ export const NavElement = () => {
         <a className={styles.linkButton}>
           <span className="icon-arrow-right">
             <span className="screen-reader-only">
-              Arrow Right Icon - When clicked, go to the next fractal in the
-              exhibition.
+              Arrow Right Icon - When clicked, go to the next fractal in the exhibition.
             </span>
           </span>
         </a>

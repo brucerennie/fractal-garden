@@ -1,11 +1,7 @@
 import Head from "next/head";
 import { useEffect, useState } from "react";
 import { Canvas } from "../components/Canvas";
-import {
-  PanelBoolean,
-  PanelColor,
-  PanelNumber,
-} from "../components/ExplorerControls";
+import { PanelBoolean, PanelColor, PanelNumber } from "../components/ExplorerControls";
 import { ExplorerPanel } from "../components/ExplorerPanel";
 import { NavElement } from "../components/Navbar";
 import { SideDrawer } from "../components/SideDrawer";
@@ -77,7 +73,7 @@ function drawPolygon(
   sides: number,
   rotation: number,
   fillPolygons: boolean,
-  strokePolygons: boolean
+  strokePolygons: boolean,
 ) {
   ctx.beginPath();
 
@@ -154,16 +150,9 @@ const NFlake = ({ description }: Props) => {
     const ratio = window.devicePixelRatio || 1;
     const scaleFactor = getScaleFactor(config.sides);
     const rootRadius = (Math.min(width, height) * (1 - 2 * PADDING)) / 2;
-    const rotation = radians(
-      config.rotation + (config.sides === 4 ? 45 : 0)
-    );
+    const rotation = radians(config.rotation + (config.sides === 4 ? 45 : 0));
 
-    const drawFlake = (
-      centerX: number,
-      centerY: number,
-      radius: number,
-      depth: number
-    ) => {
+    const drawFlake = (centerX: number, centerY: number, radius: number, depth: number) => {
       if (depth >= config.iterations) {
         drawPolygon(
           ctx,
@@ -173,7 +162,7 @@ const NFlake = ({ description }: Props) => {
           config.sides,
           rotation,
           config.fillPolygons,
-          config.strokePolygons
+          config.strokePolygons,
         );
         return;
       }
@@ -187,7 +176,7 @@ const NFlake = ({ description }: Props) => {
           centerX + offset * Math.cos(angle),
           centerY + offset * Math.sin(angle),
           childRadius,
-          depth + 1
+          depth + 1,
         );
       }
 
@@ -231,12 +220,7 @@ const NFlake = ({ description }: Props) => {
           <PanelColor path="background" />
           <PanelColor path="color" />
           <PanelNumber path="sides" min={MIN_SIDES} max={MAX_SIDES} step={1} />
-          <PanelNumber
-            path="iterations"
-            min={0}
-            max={maxIterations}
-            step={1}
-          />
+          <PanelNumber path="iterations" min={0} max={maxIterations} step={1} />
           <PanelBoolean path="animateIterations" />
           <PanelBoolean path="includeCenter" />
           <PanelNumber path="rotation" min={-180} max={180} step={1} />

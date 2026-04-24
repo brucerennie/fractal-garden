@@ -8,7 +8,7 @@ export interface Scalable {
 
 export function limiter(
   { x: [xMin, xMax], y: [yMin, yMax] }: Range2D,
-  padding = 0
+  padding = 0,
 ): (dimensions: NumberPair) => NumberPair {
   const paddingFactor = 1 - 2 * padding;
 
@@ -38,7 +38,7 @@ export function limiter(
 
 export function remapper(
   [pMin, pMax]: NumberPair,
-  [tMin, tMax]: NumberPair
+  [tMin, tMax]: NumberPair,
 ): (p: number) => number {
   const factor = (tMax - tMin) / (pMax - pMin);
   return (p) => tMin + factor * (p - pMin);

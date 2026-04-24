@@ -1,7 +1,7 @@
 function createProgram(
   gl: WebGLRenderingContext,
   vertexShader: WebGLShader,
-  fragmentShader: WebGLShader
+  fragmentShader: WebGLShader,
 ) {
   const program = gl.createProgram();
   if (!program) return;
@@ -19,11 +19,7 @@ function createProgram(
   return program;
 }
 
-function compileShader(
-  gl: WebGLRenderingContext,
-  shaderSource: string,
-  shaderType: number
-) {
+function compileShader(gl: WebGLRenderingContext, shaderSource: string, shaderType: number) {
   const shader = gl.createShader(shaderType);
   if (!shader) return;
 
@@ -39,11 +35,7 @@ function compileShader(
   return shader;
 }
 
-export function createShaderProgram(
-  gl: WebGLRenderingContext,
-  vertSrc: string,
-  fragSrc: string
-) {
+export function createShaderProgram(gl: WebGLRenderingContext, vertSrc: string, fragSrc: string) {
   const vert = compileShader(gl, vertSrc, gl.VERTEX_SHADER);
   const frag = compileShader(gl, fragSrc, gl.FRAGMENT_SHADER);
   if (!vert || !frag) return;
