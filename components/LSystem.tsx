@@ -102,7 +102,7 @@ const LSystem = ({ ruleset }: Props) => {
 
       const [xOff, yOff] = config.ruleset.initTranslation({ width, height }, initialLength);
       ctx.translate(xOff, yOff);
-      config.ruleset.initRotation && config.ruleset.initRotation(ctx, config);
+      config.ruleset.initRotation?.(ctx, config);
     };
 
     const commonAfter = () => {

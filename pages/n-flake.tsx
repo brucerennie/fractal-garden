@@ -58,7 +58,7 @@ function getMaxIterations(sides: number, includeCenter: boolean) {
   const branchFactor = getBranchFactor(sides, includeCenter);
   let iterations = 7;
 
-  while (iterations > 2 && Math.pow(branchFactor, iterations) > MAX_POLYGONS) {
+  while (iterations > 2 && branchFactor ** iterations > MAX_POLYGONS) {
     iterations -= 1;
   }
 

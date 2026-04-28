@@ -33,7 +33,7 @@ export const _Canvas = ({ setCtx, width, height }: CleanedProps) => {
     if (!context) return;
 
     setCtx(context);
-  }, []);
+  }, [setCtx]);
 
   return <canvas ref={canvasRef} width={width} height={height} />;
 };
@@ -65,7 +65,7 @@ export const _WebGLCanvas = ({ setCtx, setCnv, width, height }: WebGLCleanedProp
     if (!context) return;
     setCtx(context);
     setCnv(canvas);
-  }, []);
+  }, [setCtx, setCnv]);
 
   useEffect(() => {
     const canvas = canvasRef.current;

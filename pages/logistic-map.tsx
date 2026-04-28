@@ -239,7 +239,7 @@ const LogisticMap = ({ description }: Props) => {
     setConfig(merged);
   };
 
-  const resetView = () => {
+  const _resetView = () => {
     setConfig((old) => ({
       ...old,
       preset: "Full",

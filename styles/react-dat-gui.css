@@ -7,7 +7,9 @@
   max-height: calc(100vh - 36px);
   overflow-y: auto;
   font-size: 12px;
-  font-family: Lucida Grande, sans-serif;
+  font-family:
+    Lucida Grande,
+    sans-serif;
   box-sizing: border-box;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -234,7 +236,9 @@
 }
 .react-dat-gui .cr.color .picker {
   background: #fff;
-  box-shadow: 0 0 2px rgba(0, 0, 0, 0.3), 0 4px 8px rgba(0, 0, 0, 0.3);
+  box-shadow:
+    0 0 2px rgba(0, 0, 0, 0.3),
+    0 4px 8px rgba(0, 0, 0, 0.3);
   box-sizing: initial;
   width: auto;
   font-family: Menlo, sans-serif;

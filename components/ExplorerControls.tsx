@@ -1,4 +1,4 @@
-import { type CSSProperties, type ComponentProps, useEffect, useId, useRef, useState } from "react";
+import { type ComponentProps, type CSSProperties, useEffect, useId, useRef, useState } from "react";
 import { DatBoolean, DatSelect } from "react-dat-gui";
 import styles from "../styles/ExplorerPanel.module.css";
 
@@ -294,7 +294,7 @@ function getContrastingSwatchText(hexColor: string) {
   const green = parseHexChannel(normalized.slice(3, 5)) / 255;
   const blue = parseHexChannel(normalized.slice(5, 7)) / 255;
   const channels = [red, green, blue].map((channel) =>
-    channel <= 0.03928 ? channel / 12.92 : Math.pow((channel + 0.055) / 1.055, 2.4),
+    channel <= 0.03928 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4,
   );
   const luminance = channels[0] * 0.2126 + channels[1] * 0.7152 + channels[2] * 0.0722;
 

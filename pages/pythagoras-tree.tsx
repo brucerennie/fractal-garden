@@ -142,7 +142,7 @@ const PythagorasTreeComponent = ({ description }: Props) => {
     };
 
     draw();
-  }, [config, ctx, width, height, config.animateIterations]);
+  }, [config, ctx, width, height]);
 
   const handleUpdate = (newData: Config) => {
     setConfig((prevState) => ({ ...prevState, ...newData }));

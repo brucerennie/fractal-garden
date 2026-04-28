@@ -37,7 +37,7 @@
 
 .cardContent {
   color: var(--yellow-white);
-  text-decoration: none !important;
+  text-decoration: none;
   border-bottom: none;
   text-align: center;
 }

@@ -85,7 +85,7 @@ const SierpinskiCarpetComponent = ({ description }: Props) => {
     };
 
     drawSierpinskiCarpet();
-  }, [config, ctx, width, height, config.animateIterations]);
+  }, [config, ctx, width, height]);
 
   const handleUpdate = (newData: Config) => {
     setConfig((prevState) => ({ ...prevState, ...newData }));

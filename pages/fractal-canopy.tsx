@@ -171,7 +171,7 @@ const FractalTree = ({ description }: Props) => {
     // factor by which the tree grows to the max
     const lenFactor = new Array(config.maxIterations)
       .fill(0)
-      .reduce((acc, _, i) => acc + Math.pow(config.lengthFactor, i + 1), 0);
+      .reduce((acc, _, i) => acc + config.lengthFactor ** (i + 1), 0);
 
     // pad height and width separately
     const padding = 0.05;
@@ -198,7 +198,7 @@ const FractalTree = ({ description }: Props) => {
     };
 
     drawTree();
-  }, [config, ctx, width, height, config.animateAngle]);
+  }, [config, ctx, width, height, strokeStyles, configAngle, angle]);
 
   const handleUpdate = (newData: Config) => {
     setConfig((prevState) => {

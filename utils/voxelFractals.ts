@@ -193,7 +193,7 @@ export function generateVoxelFractal(
     cubes = next;
   }
 
-  const size = 2 / Math.pow(3, iterations);
+  const size = 2 / 3 ** iterations;
 
   return cubes.map((cube) => ({
     x: cube.gridX * size,

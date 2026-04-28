@@ -34,10 +34,7 @@ const HeadingRenderer: React.FC<HeadingResolverProps> = ({ level, children }) =>
   }
 };
 
-const ParagraphRenderer = (paragraph: {
-  children?: JSX.Element[];
-  node?: any;
-}) => {
+const ParagraphRenderer = (paragraph: { children?: JSX.Element[]; node?: any }) => {
   const { node } = paragraph;
 
   if (node.children[0].tagName === "img") {
