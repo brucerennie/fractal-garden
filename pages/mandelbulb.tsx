@@ -75,6 +75,7 @@ const Mandelbulb = ({ description }: Props) => {
     const vertBuf = gl.createBuffer();
     if (!vertBuf) return;
 
+    // biome-ignore lint/correctness/useHookAtTopLevel: conditional hook by design
     gl.useProgram(program);
     gl.bindBuffer(gl.ARRAY_BUFFER, vertBuf);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);

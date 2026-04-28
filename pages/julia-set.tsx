@@ -76,6 +76,7 @@ const JuliaSet = ({ description }: Props) => {
 
     const { program, vert, frag } = output;
 
+    // biome-ignore lint/correctness/useHookAtTopLevel: conditional hook by design
     gl.useProgram(program);
 
     const vertBuf = gl.createBuffer();
