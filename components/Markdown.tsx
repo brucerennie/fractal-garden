@@ -34,7 +34,13 @@ const HeadingRenderer: React.FC<HeadingResolverProps> = ({ level, children }) =>
   }
 };
 
-const ParagraphRenderer = (paragraph: { children?: JSX.Element[]; node?: any }) => {
+type HastElement = {
+  tagName?: string;
+  properties?: { alt?: string; src?: string };
+  children: HastElement[];
+};
+
+const ParagraphRenderer = (paragraph: { children?: JSX.Element[]; node?: HastElement }) => {
   const { node } = paragraph;
 
   if (node.children[0].tagName === "img") {
@@ -72,7 +78,7 @@ const ParagraphRenderer = (paragraph: { children?: JSX.Element[]; node?: any }) 
   return <p className={className}>{paragraph.children}</p>;
 };
 
-const LinkRenderer = (props: any) => {
+const LinkRenderer = (props: React.AnchorHTMLAttributes<HTMLAnchorElement>) => {
   const href = props.href;
   const isInternalLink = href && (href.startsWith("/") || href.startsWith("#"));
 
