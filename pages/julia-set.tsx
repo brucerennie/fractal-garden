@@ -1,18 +1,21 @@
 import Head from "next/head";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { WebGLCanvas } from "../components/Canvas";
 import { PanelColor, PanelNumber, PanelSelect } from "../components/ExplorerControls";
 import { ExplorerPanel } from "../components/ExplorerPanel";
 import { NavElement } from "../components/Navbar";
 import { SideDrawer } from "../components/SideDrawer";
 import styles from "../styles/Fullscreen.module.css";
-import { useShaderViewportControls } from "../utils/hooks/useShaderViewportControls";
+import {
+  type ShaderViewport,
+  useShaderViewportControls,
+} from "../utils/hooks/useShaderViewportControls";
 import { useWindowSize } from "../utils/hooks/useWindowResize";
 import { getDescription } from "../utils/readFiles";
 import { createShaderProgram } from "../utils/shaders/compileShader";
 import fragmentShader from "../utils/shaders/julia.frag";
 import vertexShader from "../utils/shaders/mandelbrot.vert";
-import { createJuliaReferenceOrbit } from "../utils/shaders/referenceOrbits";
+import { createJuliaReferenceOrbitPair } from "../utils/shaders/referenceOrbits";
 
 type Props = {
   description: string;
@@ -51,25 +54,42 @@ const JuliaSet = ({ description }: Props) => {
   const { width, height } = useWindowSize();
   const [gl, setGl] = useState<WebGLRenderingContext | null>(null);
   const [cnv, setCnv] = useState<HTMLCanvasElement | null>(null);
-  const viewportRef = useRef({
+  const viewportRef = useRef<ShaderViewport>({
     center: [...INITIAL_CENTER] as [number, number],
     zoomSize: INITIAL_ZOOM_SIZE,
   });
   const renderRef = useRef<(() => void) | null>(null);
+  const renderFrameRef = useRef<number | null>(null);
   const [config, setConfig] = useState<Config>({
     preset: "Rabbit",
     cReal: presets.Rabbit.cReal,
     cImag: presets.Rabbit.cImag,
     background: "#252424",
   });
+  const scheduleRender = useCallback(() => {
+    if (renderFrameRef.current !== null) return;
+
+    renderFrameRef.current = requestAnimationFrame(() => {
+      renderFrameRef.current = null;
+      renderRef.current?.();
+    });
+  }, []);
 
   useShaderViewportControls({
     canvas: cnv,
     viewportRef,
     minZoomSize: MIN_ZOOM_SIZE,
     maxZoomSize: MAX_ZOOM_SIZE,
-    onViewportChange: () => renderRef.current?.(),
+    onViewportChange: scheduleRender,
   });
+
+  useEffect(() => {
+    return () => {
+      if (renderFrameRef.current !== null) {
+        cancelAnimationFrame(renderFrameRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     if (!gl || !width || !height || !cnv) return;
@@ -97,8 +117,8 @@ const JuliaSet = ({ description }: Props) => {
     const resolutionLocation = gl.getUniformLocation(program, "u_resolution");
     const cLocation = gl.getUniformLocation(program, "u_c");
     const backgroundLocation = gl.getUniformLocation(program, "u_background");
-    const centerDeltaLocation = gl.getUniformLocation(program, "u_centerDelta");
-    const referenceOrbitLocation = gl.getUniformLocation(program, "u_referenceOrbit[0]");
+    const referenceOrbitHighLocation = gl.getUniformLocation(program, "u_referenceOrbitHigh[0]");
+    const referenceOrbitLowLocation = gl.getUniformLocation(program, "u_referenceOrbitLow[0]");
     const usePerturbationLocation = gl.getUniformLocation(program, "u_usePerturbation");
 
     if (
@@ -107,8 +127,8 @@ const JuliaSet = ({ description }: Props) => {
       resolutionLocation === null ||
       cLocation === null ||
       backgroundLocation === null ||
-      centerDeltaLocation === null ||
-      referenceOrbitLocation === null ||
+      referenceOrbitHighLocation === null ||
+      referenceOrbitLowLocation === null ||
       usePerturbationLocation === null
     ) {
       return;
@@ -131,7 +151,7 @@ const JuliaSet = ({ description }: Props) => {
     const drawJulia = () => {
       const [resolutionX, resolutionY] = getResolution();
       const [bgR, bgG, bgB] = parseHexColor(config.background);
-      const { center, zoomSize } = viewportRef.current;
+      const { center, centerLow = [0, 0], zoomSize } = viewportRef.current;
       const usePerturbation = zoomSize <= PERTURBATION_ZOOM_THRESHOLD ? 1 : 0;
 
       gl.uniform2f(centerLocation, center[0], center[1]);
@@ -142,19 +162,15 @@ const JuliaSet = ({ description }: Props) => {
       gl.uniform1f(usePerturbationLocation, usePerturbation);
 
       if (usePerturbation) {
-        const referenceCenter: [number, number] = [Math.fround(center[0]), Math.fround(center[1])];
-        const centerDelta: [number, number] = [
-          center[0] - referenceCenter[0],
-          center[1] - referenceCenter[1],
-        ];
-        const referenceOrbit = createJuliaReferenceOrbit(
-          referenceCenter,
+        const referenceOrbit = createJuliaReferenceOrbitPair(
+          center,
+          centerLow,
           [config.cReal, config.cImag],
           MAX_ITERATIONS,
         );
 
-        gl.uniform2f(centerDeltaLocation, centerDelta[0], centerDelta[1]);
-        gl.uniform2fv(referenceOrbitLocation, referenceOrbit);
+        gl.uniform2fv(referenceOrbitHighLocation, referenceOrbit.high);
+        gl.uniform2fv(referenceOrbitLowLocation, referenceOrbit.low);
       }
 
       gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);

@@ -1,8 +1,11 @@
 import { type MutableRefObject, useEffect } from "react";
 import { constrain } from "../ctxHelpers";
 
-type Viewport = {
+type DoubleDouble = [number, number];
+
+export type ShaderViewport = {
   center: [number, number];
+  centerLow?: [number, number];
   zoomSize: number;
 };
 
@@ -13,11 +16,16 @@ type Point = {
 
 type Params = {
   canvas: HTMLCanvasElement | null;
-  viewportRef: MutableRefObject<Viewport>;
+  viewportRef: MutableRefObject<ShaderViewport>;
   minZoomSize: number;
   maxZoomSize: number;
   onViewportChange: () => void;
   flipY?: boolean;
+};
+
+type PrecisePoint = {
+  x: DoubleDouble;
+  y: DoubleDouble;
 };
 
 function distance(a: Point, b: Point) {
@@ -29,6 +37,18 @@ function midpoint(a: Point, b: Point) {
     x: (a.x + b.x) / 2,
     y: (a.y + b.y) / 2,
   };
+}
+
+function addFloat([high, low]: DoubleDouble, value: number): DoubleDouble {
+  const sum = high + value;
+  const offset = sum - high;
+  const error = high - (sum - offset) + (value - offset) + low;
+  const result = sum + error;
+  return [result, error - (result - sum)];
+}
+
+function subtractFloat(value: DoubleDouble, subtrahend: number): DoubleDouble {
+  return addFloat(value, -subtrahend);
 }
 
 export function useShaderViewportControls({
@@ -43,8 +63,8 @@ export function useShaderViewportControls({
     if (!canvas) return;
 
     const activePointers = new Map<number, Point>();
-    let dragAnchorWorld: [number, number] | null = null;
-    let pinchAnchorWorld: [number, number] | null = null;
+    let dragAnchorWorld: PrecisePoint | null = null;
+    let pinchAnchorWorld: PrecisePoint | null = null;
     let pinchInitialDistance = 0;
     let pinchInitialZoom = 0;
 
@@ -72,24 +92,25 @@ export function useShaderViewportControls({
     const pointToWorld = (point: Point, viewport = viewportRef.current) => {
       const normalized = pointToNormalized(point);
       const yDirection = flipY ? -1 : 1;
-      return [
-        viewport.center[0] + normalized.x * viewport.zoomSize,
-        viewport.center[1] + normalized.y * viewport.zoomSize * yDirection,
-      ] as [number, number];
+      const centerLow = viewport.centerLow || [0, 0];
+
+      return {
+        x: addFloat([viewport.center[0], centerLow[0]], normalized.x * viewport.zoomSize),
+        y: addFloat(
+          [viewport.center[1], centerLow[1]],
+          normalized.y * viewport.zoomSize * yDirection,
+        ),
+      };
     };
 
-    const setViewportFromAnchor = (
-      anchorWorld: [number, number],
-      point: Point,
-      zoomSize: number,
-    ) => {
+    const setViewportFromAnchor = (anchorWorld: PrecisePoint, point: Point, zoomSize: number) => {
       const normalized = pointToNormalized(point);
+      const nextX = subtractFloat(anchorWorld.x, normalized.x * zoomSize);
+      const nextY = subtractFloat(anchorWorld.y, normalized.y * zoomSize * (flipY ? -1 : 1));
 
       viewportRef.current = {
-        center: [
-          anchorWorld[0] - normalized.x * zoomSize,
-          anchorWorld[1] - normalized.y * zoomSize * (flipY ? -1 : 1),
-        ],
+        center: [nextX[0], nextY[0]],
+        centerLow: [nextX[1], nextY[1]],
         zoomSize,
       };
       onViewportChange();

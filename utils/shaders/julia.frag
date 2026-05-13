@@ -5,8 +5,8 @@ uniform vec2 u_center;
 uniform float u_zoomSize;
 uniform vec2 u_c;
 uniform vec3 u_background;
-uniform vec2 u_centerDelta;
-uniform vec2 u_referenceOrbit[91];
+uniform vec2 u_referenceOrbitHigh[91];
+uniform vec2 u_referenceOrbitLow[91];
 uniform float u_usePerturbation;
 
 const float escapeRadius = 4.0;
@@ -52,13 +52,16 @@ void main() {
             iteration++;
         }
     } else {
-        vec2 deltaZ = u_centerDelta + uv * u_zoomSize;
-        z = u_referenceOrbit[0] + deltaZ;
+        vec2 deltaZ = uv * u_zoomSize;
+        z = u_referenceOrbitHigh[0] + u_referenceOrbitLow[0] + deltaZ;
 
         for (int i = 0; i < maxIterations; i++) {
-            vec2 referenceZ = u_referenceOrbit[i];
-            deltaZ = 2.0 * complexMul(referenceZ, deltaZ) + complexSquare(deltaZ);
-            z = u_referenceOrbit[i + 1] + deltaZ;
+            vec2 referenceHigh = u_referenceOrbitHigh[i];
+            vec2 referenceLow = u_referenceOrbitLow[i];
+            deltaZ = 2.0 * complexMul(referenceHigh, deltaZ)
+                + 2.0 * complexMul(referenceLow, deltaZ)
+                + complexSquare(deltaZ);
+            z = u_referenceOrbitHigh[i + 1] + u_referenceOrbitLow[i + 1] + deltaZ;
             if (dot(z, z) > escapeRadius2) {
                 break;
             }
