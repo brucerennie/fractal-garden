@@ -3,6 +3,9 @@ precision highp float;
 uniform vec2 u_resolution;
 uniform vec2 u_center;
 uniform float u_zoomSize;
+uniform vec2 u_centerDelta;
+uniform vec2 u_referenceOrbit[81];
+uniform float u_usePerturbation;
 
 const float escapeRadius = 4.0;
 const float escapeRadius2 = escapeRadius * escapeRadius;
@@ -11,6 +14,13 @@ const float invMaxIterations = 1.0 / float(maxIterations);
 
 vec2 complexSquare(vec2 v) {
     return vec2(v.x * v.x - v.y * v.y, v.x * v.y * 2.0);
+}
+
+vec2 signedFold(vec2 referenceZ, vec2 deltaZ) {
+    return vec2(
+        referenceZ.x < 0.0 ? -deltaZ.x : deltaZ.x,
+        referenceZ.y < 0.0 ? -deltaZ.y : deltaZ.y
+    );
 }
 
 // Procedural palette generator by Inigo Quilez.
@@ -33,12 +43,31 @@ void main() {
     vec2 z = vec2(0.0);
     int iteration = 0;
 
-    for (int i = 0; i < maxIterations; i++) {
-        z = complexSquare(abs(z)) + c;
-        if (dot(z, z) > escapeRadius2) {
-            break;
+    if (u_usePerturbation < 0.5) {
+        for (int i = 0; i < maxIterations; i++) {
+            z = complexSquare(abs(z)) + c;
+            if (dot(z, z) > escapeRadius2) {
+                break;
+            }
+            iteration++;
         }
-        iteration++;
+    } else {
+        vec2 deltaC = u_centerDelta + vec2(uv.x, -uv.y) * u_zoomSize;
+        vec2 deltaZ = vec2(0.0);
+
+        for (int i = 0; i < maxIterations; i++) {
+            vec2 referenceZ = u_referenceOrbit[i];
+            vec2 foldedReference = abs(referenceZ);
+            vec2 foldedDelta = signedFold(referenceZ, deltaZ);
+            deltaZ = complexSquare(foldedReference + foldedDelta)
+                - complexSquare(foldedReference)
+                + deltaC;
+            z = u_referenceOrbit[i + 1] + deltaZ;
+            if (dot(z, z) > escapeRadius2) {
+                break;
+            }
+            iteration++;
+        }
     }
 
     vec3 color = vec3(0.0);

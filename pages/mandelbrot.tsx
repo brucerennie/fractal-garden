@@ -11,6 +11,7 @@ import { getDescription } from "../utils/readFiles";
 import { createShaderProgram } from "../utils/shaders/compileShader";
 import fragmentShader from "../utils/shaders/mandelbrot.frag";
 import vertexShader from "../utils/shaders/mandelbrot.vert";
+import { createMandelbrotReferenceOrbit } from "../utils/shaders/referenceOrbits";
 
 type Props = {
   description: string;
@@ -18,8 +19,9 @@ type Props = {
 
 const INITIAL_CENTER: [number, number] = [-0.5, 0];
 const INITIAL_ZOOM_SIZE = 1.5;
-const MIN_ZOOM_SIZE = 0.00005;
+const MIN_ZOOM_SIZE = 1e-30;
 const MAX_ZOOM_SIZE = 4;
+const MAX_ITERATIONS = 40;
 
 const Mandelbrot = ({ description }: Props) => {
   const { width, height } = useWindowSize();
@@ -60,10 +62,16 @@ const Mandelbrot = ({ description }: Props) => {
     gl.enableVertexAttribArray(aPositionLocation);
     gl.vertexAttribPointer(aPositionLocation, 2, gl.FLOAT, false, 0, 0);
 
-    const zoomCenterLocation = gl.getUniformLocation(program, "u_zoomCenter");
     const zoomSizeLocation = gl.getUniformLocation(program, "u_zoomSize");
     const resolutionLocation = gl.getUniformLocation(program, "u_resolution");
-    if (zoomCenterLocation === null || zoomSizeLocation === null || resolutionLocation === null) {
+    const centerDeltaLocation = gl.getUniformLocation(program, "u_centerDelta");
+    const referenceOrbitLocation = gl.getUniformLocation(program, "u_referenceOrbit[0]");
+    if (
+      zoomSizeLocation === null ||
+      resolutionLocation === null ||
+      centerDeltaLocation === null ||
+      referenceOrbitLocation === null
+    ) {
       return;
     }
 
@@ -71,10 +79,17 @@ const Mandelbrot = ({ description }: Props) => {
       const ratio = window.devicePixelRatio || 1;
       const resolution = [width * ratio, height * ratio];
       const { center, zoomSize } = viewportRef.current;
+      const referenceCenter: [number, number] = [Math.fround(center[0]), Math.fround(center[1])];
+      const centerDelta: [number, number] = [
+        center[0] - referenceCenter[0],
+        center[1] - referenceCenter[1],
+      ];
+      const referenceOrbit = createMandelbrotReferenceOrbit(referenceCenter, MAX_ITERATIONS);
 
-      gl.uniform2f(zoomCenterLocation, center[0], center[1]);
       gl.uniform1f(zoomSizeLocation, zoomSize);
       gl.uniform2f(resolutionLocation, resolution[0], resolution[1]);
+      gl.uniform2f(centerDeltaLocation, centerDelta[0], centerDelta[1]);
+      gl.uniform2fv(referenceOrbitLocation, referenceOrbit);
 
       gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
       gl.clearColor(0.0, 0.0, 0.0, 1.0);
