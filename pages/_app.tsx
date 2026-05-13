@@ -6,6 +6,8 @@ import Head from "next/head";
 import Script from "next/script";
 import { PageSeo } from "../components/PageSeo";
 
+const plausibleEnabled = process.env.NODE_ENV === "production";
+
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <>
@@ -22,6 +24,22 @@ function MyApp({ Component, pageProps }: AppProps) {
         </Script>
         <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
       </Head>
+      {plausibleEnabled ? (
+        <>
+          <Script
+            defer
+            data-domain="fractal.garden"
+            src="https://plausible.trebeljahr.com/js/script.file-downloads.hash.outbound-links.pageview-props.revenue.tagged-events.js"
+          />
+          <Script id="plausible-init">
+            {`
+              window.plausible = window.plausible || function() {
+                (window.plausible.q = window.plausible.q || []).push(arguments);
+              };
+            `}
+          </Script>
+        </>
+      ) : null}
       <Component {...pageProps} />
       <PageSeo />
     </>
