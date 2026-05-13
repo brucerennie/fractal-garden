@@ -17,12 +17,11 @@ export const Footer = () => {
         </svg>{" "}
         by <a href="https://trebeljahr.com">Rico Trebeljahr</a>
       </p>
-      <span className={styles.separator} aria-hidden="true">
-        |
-      </span>
-      <p>
-        <Link href="/imprint">Imprint</Link>
-      </p>
+      <nav className={styles.links} aria-label="Legal">
+        <Link href="/imprint" passHref>
+          <a href="/imprint">Imprint</a>
+        </Link>
+      </nav>
     </footer>
   );
 };

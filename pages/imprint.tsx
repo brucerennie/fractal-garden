@@ -15,9 +15,11 @@ const Imprint: NextPage = () => {
         />
       </Head>
       <main className={styles.container}>
-        <p>
-          <Link href="/">
-            <a className={styles.link}>&larr; Back to Fractal Garden</a>
+        <p className={styles.backLink}>
+          <Link href="/" passHref>
+            <a href="/" className={styles.link}>
+              &larr; Back to Fractal Garden
+            </a>
           </Link>
         </p>
         <h1 className={styles.heading}>Imprint</h1>

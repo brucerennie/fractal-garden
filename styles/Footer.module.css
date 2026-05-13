@@ -1,14 +1,15 @@
 .footer {
-  width: min(100% - 3.2rem, 112rem);
+  width: 100%;
+  max-width: 75rem;
   margin: 0 auto;
-  padding: 2.4rem 0 3rem;
+  padding: 2.5rem 2rem 3.5rem;
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 1rem;
-  flex-wrap: wrap;
-  border-top: 1px solid rgba(245, 241, 209, 0.12);
-  font-size: 1.4rem;
+  justify-content: space-between;
+  gap: 1rem 2rem;
+  border-top: 1px solid rgba(245, 241, 209, 0.16);
+  font-size: 1.3rem;
+  line-height: 1.5;
   color: var(--bright-grey);
 }
 
@@ -32,12 +33,12 @@
   align-items: center;
   gap: 0.6rem;
   margin: 0;
-  white-space: nowrap;
+  flex-wrap: wrap;
 }
 
-.separator {
-  color: var(--bright-grey);
-  opacity: 0.5;
+.links {
+  display: flex;
+  align-items: center;
 }
 
 .heart {
@@ -74,13 +75,9 @@
 
 @media (max-width: 520px) {
   .footer {
+    align-items: flex-start;
     flex-direction: column;
-    padding-bottom: 2.4rem;
-    font-size: 1.3rem;
-  }
-
-  .separator {
-    display: none;
+    padding-bottom: 3rem;
   }
 }
 

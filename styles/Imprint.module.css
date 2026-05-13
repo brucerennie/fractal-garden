@@ -1,21 +1,25 @@
 .container {
   max-width: 75rem;
   margin: 0 auto;
-  padding: 6rem 2rem 4rem;
+  padding: 6rem 2rem 3rem;
   font-size: 1.6rem;
   line-height: 1.7;
   color: var(--yellow-white);
 }
 
+.backLink {
+  margin-bottom: 3rem;
+  font-size: 1.3rem;
+  line-height: 1.4;
+}
+
 .heading {
   font-size: 3.6rem;
-  margin-top: 3rem;
-  margin-bottom: 3rem;
-  letter-spacing: 0.2rem;
+  margin-bottom: 2.4rem;
+  letter-spacing: 0.12rem;
   font-weight: 200;
   border-bottom: 1px solid var(--yellow-white);
   padding-bottom: 1.2rem;
-  text-align: center;
 }
 
 .subheading {
