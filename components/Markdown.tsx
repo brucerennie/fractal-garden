@@ -37,23 +37,23 @@ const HeadingRenderer: React.FC<HeadingResolverProps> = ({ level, children }) =>
 type HastElement = {
   tagName?: string;
   properties?: { alt?: string; src?: string };
-  children: HastElement[];
+  children?: HastElement[];
 };
 
 const ParagraphRenderer = (paragraph: { children?: JSX.Element[]; node?: HastElement }) => {
   const { node } = paragraph;
+  const image = node?.children?.[0];
 
-  if (node.children[0].tagName === "img") {
-    const image = node.children[0];
-    const metastring = image.properties.alt;
-    const alt = metastring?.replace(/ *\{[^)]*\} */g, "");
+  if (image?.tagName === "img" && image.properties?.src) {
+    const metastring = image.properties.alt ?? "";
+    const alt = metastring.replace(/ *\{[^)]*\} */g, "");
     const metaWidth = metastring.match(/{([^}]+)x/);
     const metaHeight = metastring.match(/x([^}]+)}/);
     const width = metaWidth ? metaWidth[1] : "768";
     const height = metaHeight ? metaHeight[1] : "432";
-    const isPriority = metastring?.toLowerCase().match("{priority}");
-    const hasCaption = metastring?.toLowerCase().includes("{caption:");
-    const caption = metastring?.match(/{caption: (.*?)}/)?.pop();
+    const isPriority = metastring.toLowerCase().includes("{priority}");
+    const hasCaption = metastring.toLowerCase().includes("{caption:");
+    const caption = metastring.match(/{caption: (.*?)}/)?.pop();
 
     return (
       <div>
@@ -65,7 +65,7 @@ const ParagraphRenderer = (paragraph: { children?: JSX.Element[]; node?: HastEle
           alt={alt}
           priority={isPriority}
         />
-        {hasCaption ? <div aria-label={caption}>{caption}</div> : null}
+        {hasCaption ? <div>{caption}</div> : null}
       </div>
     );
   }
