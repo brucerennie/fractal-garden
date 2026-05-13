@@ -45,6 +45,7 @@ const INITIAL_ZOOM_SIZE = 1.8;
 const MIN_ZOOM_SIZE = 1e-30;
 const MAX_ZOOM_SIZE = 4;
 const MAX_ITERATIONS = 90;
+const PERTURBATION_ZOOM_THRESHOLD = 0.00005;
 
 const JuliaSet = ({ description }: Props) => {
   const { width, height } = useWindowSize();
@@ -91,18 +92,24 @@ const JuliaSet = ({ description }: Props) => {
     gl.enableVertexAttribArray(aPositionLocation);
     gl.vertexAttribPointer(aPositionLocation, 2, gl.FLOAT, false, 0, 0);
 
+    const centerLocation = gl.getUniformLocation(program, "u_center");
     const zoomSizeLocation = gl.getUniformLocation(program, "u_zoomSize");
     const resolutionLocation = gl.getUniformLocation(program, "u_resolution");
+    const cLocation = gl.getUniformLocation(program, "u_c");
     const backgroundLocation = gl.getUniformLocation(program, "u_background");
     const centerDeltaLocation = gl.getUniformLocation(program, "u_centerDelta");
     const referenceOrbitLocation = gl.getUniformLocation(program, "u_referenceOrbit[0]");
+    const usePerturbationLocation = gl.getUniformLocation(program, "u_usePerturbation");
 
     if (
+      centerLocation === null ||
       zoomSizeLocation === null ||
       resolutionLocation === null ||
+      cLocation === null ||
       backgroundLocation === null ||
       centerDeltaLocation === null ||
-      referenceOrbitLocation === null
+      referenceOrbitLocation === null ||
+      usePerturbationLocation === null
     ) {
       return;
     }
@@ -125,22 +132,30 @@ const JuliaSet = ({ description }: Props) => {
       const [resolutionX, resolutionY] = getResolution();
       const [bgR, bgG, bgB] = parseHexColor(config.background);
       const { center, zoomSize } = viewportRef.current;
-      const referenceCenter: [number, number] = [Math.fround(center[0]), Math.fround(center[1])];
-      const centerDelta: [number, number] = [
-        center[0] - referenceCenter[0],
-        center[1] - referenceCenter[1],
-      ];
-      const referenceOrbit = createJuliaReferenceOrbit(
-        referenceCenter,
-        [config.cReal, config.cImag],
-        MAX_ITERATIONS,
-      );
+      const usePerturbation = zoomSize <= PERTURBATION_ZOOM_THRESHOLD ? 1 : 0;
 
+      gl.uniform2f(centerLocation, center[0], center[1]);
       gl.uniform1f(zoomSizeLocation, zoomSize);
       gl.uniform2f(resolutionLocation, resolutionX, resolutionY);
+      gl.uniform2f(cLocation, config.cReal, config.cImag);
       gl.uniform3f(backgroundLocation, bgR, bgG, bgB);
-      gl.uniform2f(centerDeltaLocation, centerDelta[0], centerDelta[1]);
-      gl.uniform2fv(referenceOrbitLocation, referenceOrbit);
+      gl.uniform1f(usePerturbationLocation, usePerturbation);
+
+      if (usePerturbation) {
+        const referenceCenter: [number, number] = [Math.fround(center[0]), Math.fround(center[1])];
+        const centerDelta: [number, number] = [
+          center[0] - referenceCenter[0],
+          center[1] - referenceCenter[1],
+        ];
+        const referenceOrbit = createJuliaReferenceOrbit(
+          referenceCenter,
+          [config.cReal, config.cImag],
+          MAX_ITERATIONS,
+        );
+
+        gl.uniform2f(centerDeltaLocation, centerDelta[0], centerDelta[1]);
+        gl.uniform2fv(referenceOrbitLocation, referenceOrbit);
+      }
 
       gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
       gl.clearColor(0.0, 0.0, 0.0, 1.0);
