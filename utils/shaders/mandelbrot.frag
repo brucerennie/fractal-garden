@@ -1,9 +1,8 @@
 precision highp float;
 
 uniform vec2 u_resolution;
+uniform vec2 u_zoomCenter;
 uniform float u_zoomSize;
-uniform vec2 u_centerDelta;
-uniform vec2 u_referenceOrbit[41];
 
 const float escapeRadius = 4.0;
 const float escapeRadius2 = escapeRadius * escapeRadius;
@@ -12,10 +11,6 @@ const float invMaxIterations = 1.0 / float(maxIterations);
 
 vec2 ipow2(vec2 v) {
     return vec2(v.x * v.x - v.y * v.y, v.x * v.y * 2.0);
-}
-
-vec2 imul(vec2 a, vec2 b) {
-    return vec2(a.x * b.x - a.y * b.y, a.x * b.y + a.y * b.x);
 }
 
 // Procedural palette generator by Inigo Quilez.
@@ -33,16 +28,13 @@ vec3 paletteColor(float t) {
 }
 
 void main() {
-    vec2 uv = (2.0 * gl_FragCoord.xy - u_resolution.xy) / min(u_resolution.x, u_resolution.y);
-    vec2 deltaC = u_centerDelta + uv * u_zoomSize;
-    vec2 deltaZ = vec2(0.0);
     vec2 z = vec2(0.0);
-    int iteration = 0;
+    vec2 uv = (2.0 * gl_FragCoord.xy - u_resolution.xy) / min(u_resolution.x, u_resolution.y);
+    vec2 c = u_zoomCenter + uv * u_zoomSize;
+    int iteration;
     
     for(int i = 0; i < maxIterations; i ++ ) {
-        vec2 referenceZ = u_referenceOrbit[i];
-        deltaZ = 2.0 * imul(referenceZ, deltaZ) + ipow2(deltaZ) + deltaC;
-        z = u_referenceOrbit[i + 1] + deltaZ;
+        z = ipow2(z) + c;
         if (dot(z, z) > escapeRadius2) {
             break;
         }

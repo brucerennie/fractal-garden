@@ -11,7 +11,6 @@ import { getDescription } from "../utils/readFiles";
 import fragmentShader from "../utils/shaders/burning-ship.frag";
 import { createShaderProgram } from "../utils/shaders/compileShader";
 import vertexShader from "../utils/shaders/mandelbrot.vert";
-import { createBurningShipReferenceOrbit } from "../utils/shaders/referenceOrbits";
 
 type Props = {
   description: string;
@@ -19,10 +18,8 @@ type Props = {
 
 const INITIAL_CENTER: [number, number] = [-0.4, -0.543];
 const INITIAL_ZOOM_SIZE = 1.55;
-const MIN_ZOOM_SIZE = 1e-30;
+const MIN_ZOOM_SIZE = 0.00005;
 const MAX_ZOOM_SIZE = 4;
-const MAX_ITERATIONS = 80;
-const PERTURBATION_ZOOM_THRESHOLD = 0.00005;
 
 const BurningShip = ({ description }: Props) => {
   const { width, height } = useWindowSize();
@@ -67,18 +64,8 @@ const BurningShip = ({ description }: Props) => {
     const centerLocation = gl.getUniformLocation(program, "u_center");
     const zoomSizeLocation = gl.getUniformLocation(program, "u_zoomSize");
     const resolutionLocation = gl.getUniformLocation(program, "u_resolution");
-    const centerDeltaLocation = gl.getUniformLocation(program, "u_centerDelta");
-    const referenceOrbitLocation = gl.getUniformLocation(program, "u_referenceOrbit[0]");
-    const usePerturbationLocation = gl.getUniformLocation(program, "u_usePerturbation");
 
-    if (
-      centerLocation === null ||
-      zoomSizeLocation === null ||
-      resolutionLocation === null ||
-      centerDeltaLocation === null ||
-      referenceOrbitLocation === null ||
-      usePerturbationLocation === null
-    ) {
+    if (centerLocation === null || zoomSizeLocation === null || resolutionLocation === null) {
       return;
     }
 
@@ -90,24 +77,10 @@ const BurningShip = ({ description }: Props) => {
     const drawBurningShip = () => {
       const [resolutionX, resolutionY] = getResolution();
       const { center, zoomSize } = viewportRef.current;
-      const usePerturbation = zoomSize <= PERTURBATION_ZOOM_THRESHOLD ? 1 : 0;
 
       gl.uniform2f(centerLocation, center[0], center[1]);
       gl.uniform1f(zoomSizeLocation, zoomSize);
       gl.uniform2f(resolutionLocation, resolutionX, resolutionY);
-      gl.uniform1f(usePerturbationLocation, usePerturbation);
-
-      if (usePerturbation) {
-        const referenceCenter: [number, number] = [Math.fround(center[0]), Math.fround(center[1])];
-        const centerDelta: [number, number] = [
-          center[0] - referenceCenter[0],
-          center[1] - referenceCenter[1],
-        ];
-        const referenceOrbit = createBurningShipReferenceOrbit(referenceCenter, MAX_ITERATIONS);
-
-        gl.uniform2f(centerDeltaLocation, centerDelta[0], centerDelta[1]);
-        gl.uniform2fv(referenceOrbitLocation, referenceOrbit);
-      }
 
       gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
       gl.clearColor(0.0, 0.0, 0.0, 1.0);
